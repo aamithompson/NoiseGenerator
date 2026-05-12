@@ -18,6 +18,9 @@ const noiseDescriptions = {
     }
 };
 
+const serverURL = "https://noisegenerator.onrender.com/api/noise";
+//const serverURL = "http://localhost:5000/api/noise";
+
 //Configurable Variables
 const state = {
     noiseType : 0,
@@ -154,7 +157,7 @@ generateNoiseBtn.addEventListener('click', async function() {
 
 async function generateNoise() {
     try {
-        const response = await fetch('http://localhost:5000/api/noise', {
+        const response = await fetch(serverURL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(state)
