@@ -32,5 +32,9 @@ def generate_noise():
         'noiseType': noise_type.value
     })
 
+@app.route('/api/health', methods=['GET'])
+def server_health():
+    return jsonify({'status': 'ok'})
+
 if __name__ == '__main__':
     app.run(debug=True)

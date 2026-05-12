@@ -18,8 +18,8 @@ const noiseDescriptions = {
     }
 };
 
-const serverURL = "https://noisegenerator.onrender.com/api/noise";
-//const serverURL = "http://localhost:5000/api/noise";
+const serverURL = "https://noisegenerator.onrender.com";
+//const serverURL = "http://localhost:5000";
 
 //Configurable Variables
 const state = {
@@ -157,7 +157,7 @@ generateNoiseBtn.addEventListener('click', async function() {
 
 async function generateNoise() {
     try {
-        const response = await fetch(serverURL, {
+        const response = await fetch(serverURL + "/api/noise", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(state)
@@ -429,7 +429,42 @@ function draw() {
     playbackDraw();
 }
 
+//Server Check
+let serverReady = false;
+async function pingServer() {
+    while(!serverReady) {
+        try {
+            const response = await fetch(serverURL + "/api/health");
+            if(response.ok) {
+                setServerReady(true);
+            }
+        } catch(error) {
+            // still waking up, wait 30 seconds and try again
+        }
+
+        if(!serverReady) {
+            await new Promise(resolve => setTimeout(resolve, 30000));
+        }
+    }
+}
+
+const serverConnectionNotification = document.getElementById("serverConnectionNotification");
+function setServerReady(ready) {
+    serverReady = ready;
+    if(ready) {
+        generateNoiseBtn.disabled = false;
+        generateNoiseBtn.classList.remove("inactiveGenerateNoiseBtn");
+                serverConnectionNotification.classList.add("hideServerConnectionNotification");
+    } else {
+        generateNoiseBtn.disabled = true;
+        generateNoiseBtn.classList.add("inactiveGenerateNoiseBtn");
+        serverConnectionNotification.classList.remove("hideServerConnectionNotification");
+    }
+}
+
 //Initializations
+setServerReady(false);
+pingServer();
 SetNoiseSelection(state.noiseType);
 SetVolume(state.volume);
 SetSamplingRate(state.samplingRate);
