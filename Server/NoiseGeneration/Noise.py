@@ -14,7 +14,7 @@
 # https://en.wikipedia.org/wiki/Simplex_noise
 #===============================================================================
 import numpy as np
-import cupy as cp
+#import cupy as cp
 from PIL import Image as img
 #from numpy.lib.function_base import _angle_dispatcher
 from numpy.random import permutation
@@ -45,9 +45,9 @@ pTableCPU = np.arange(pSize)
 np.random.shuffle(pTableCPU)
 pTableCPU = np.stack([pTableCPU, pTableCPU]).flatten()
 
-pTableCUDA = cp.arange(pSize)
-cp.random.shuffle(pTableCUDA)
-pTableCUDA = cp.stack([pTableCUDA, pTableCUDA]).flatten()
+#pTableCUDA = cp.arange(pSize)
+#cp.random.shuffle(pTableCUDA)
+#pTableCUDA = cp.stack([pTableCUDA, pTableCUDA]).flatten()
 
 # Default arguments for visual
 DEFAULT_GRIDSIZE = 48
@@ -71,7 +71,7 @@ def GenerateNoiseCPU(duration=DEFAULT_DURATION, fPower=DEFAULT_FPOWER, minF=DEFA
 
     return noise
 
-def GenerateNoiseCUDA(duration=DEFAULT_DURATION, fPower=DEFAULT_FPOWER, minF=DEFAULT_MINF, maxF=DEFAULT_MAXF, sRate=DEFAULT_SRATE, att=DEFAULT_ATT):
+"""def GenerateNoiseCUDA(duration=DEFAULT_DURATION, fPower=DEFAULT_FPOWER, minF=DEFAULT_MINF, maxF=DEFAULT_MAXF, sRate=DEFAULT_SRATE, att=DEFAULT_ATT):
     samples = duration * sRate
     f = cp.fft.rfftfreq(samples, 1/sRate)
 
@@ -86,13 +86,13 @@ def GenerateNoiseCUDA(duration=DEFAULT_DURATION, fPower=DEFAULT_FPOWER, minF=DEF
     noise = cp.pad(noise, (0, samples - len(noise)))
     noise = (noise - cp.min(noise)) / (cp.max(noise) - cp.min(noise))
 
-    return cp.asnumpy(noise)
+    return cp.asnumpy(noise)"""
 
 def GenerateNoise(duration=DEFAULT_DURATION, fPower=DEFAULT_FPOWER, minF=DEFAULT_MINF, maxF=DEFAULT_MAXF, sRate=DEFAULT_SRATE, att=DEFAULT_ATT, comp=DEFAULT_COMP):
     if(comp.lower()=='cpu'):
         return GenerateNoiseCPU(duration, fPower, minF, maxF, sRate, att)
-    elif(comp.lower()=='cuda'):
-        return GenerateNoiseCUDA(duration, fPower, minF, maxF, sRate, att)
+    #elif(comp.lower()=='cuda'):
+        #return GenerateNoiseCUDA(duration, fPower, minF, maxF, sRate, att)
 
 # VISUAL FUNCTION(S)
 #-------------------------------------------------------------------------------
@@ -101,22 +101,22 @@ def GenerateVNoiseWhiteCPU(width, height):
     noise = np.random.rand(width, height)
     return noise
 
-def GenerateVNoiseWhiteCUDA(width, height):
+"""def GenerateVNoiseWhiteCUDA(width, height):
     noise = cp.random.rand(width, height)
-    return cp.asnumpy(noise)
+    return cp.asnumpy(noise)"""
 
 def GenerateVNoiseWhite(width, height, comp=DEFAULT_COMP):
     if(comp.lower()=='cpu'):
         return GenerateVNoiseWhiteCPU(width, height)
-    elif(comp.lower()=='cuda'):
-        return GenerateVNoiseWhiteCUDA(width, height)
+    #elif(comp.lower()=='cuda'):
+        #return GenerateVNoiseWhiteCUDA(width, height)
 
 #Perlin Noise
 def GenerateVNoisePerlin(width, height, octaves=1, lacunarity=2.0, persistance=0.5, gridsize=DEFAULT_GRIDSIZE, comp=DEFAULT_COMP):
     if(comp.lower()=='cpu'):
         return GenerateVNoisePerlinCPU(width, height, octaves, lacunarity, persistance, gridsize)
-    elif(comp.lower()=='cuda'):
-        return GenerateVNoisePerlinCUDA(width, height, octaves, lacunarity, persistance, gridsize)
+    #elif(comp.lower()=='cuda'):
+        #return GenerateVNoisePerlinCUDA(width, height, octaves, lacunarity, persistance, gridsize)
 
 def GenerateVNoisePerlinCPU(width, height, octaves=1, lacunarity=2.0, persistance=0.5, gridsize=DEFAULT_GRIDSIZE):
     pTableCPU = np.arange(pSize)
@@ -143,7 +143,7 @@ def GenerateVNoisePerlinCPU(width, height, octaves=1, lacunarity=2.0, persistanc
     data = (data - np.min(data)) / (np.max(data) - np.min(data))
     return data
 
-def GenerateVNoisePerlinCUDA(width, height, octaves=1, lacunarity=2.0, persistance=0.5, gridsize=DEFAULT_GRIDSIZE):
+"""def GenerateVNoisePerlinCUDA(width, height, octaves=1, lacunarity=2.0, persistance=0.5, gridsize=DEFAULT_GRIDSIZE):
     pTableCUDA = cp.arange(pSize)
     cp.random.shuffle(pTableCUDA)
     pTableCUDA = cp.stack([pTableCUDA, pTableCUDA]).flatten()
@@ -166,7 +166,7 @@ def GenerateVNoisePerlinCUDA(width, height, octaves=1, lacunarity=2.0, persistan
 
     data /= maxValue
     data = (data - cp.min(data)) / (cp.max(data) - cp.min(data))
-    return cp.asnumpy(data)
+    return cp.asnumpy(data)"""
 
 def Perlin(x, y, comp=DEFAULT_COMP):
     #Coordinates
@@ -193,8 +193,8 @@ def Perlin(x, y, comp=DEFAULT_COMP):
 def Gradient(ix, iy, x, y, comp=DEFAULT_COMP):
     if(comp.lower() == "cpu"):
         return GradientCPU(ix, iy, x, y)
-    elif(comp.lower() == "cuda"):
-        return GradientCUDA(ix, iy, x, y)
+    #elif(comp.lower() == "cuda"):
+        #return GradientCUDA(ix, iy, x, y)
 
 def GradientCPU(ix, iy, x, y):
     v = np.array([[0, 1], [0, -1], [1, 0], [-1, 0]])
@@ -203,12 +203,12 @@ def GradientCPU(ix, iy, x, y):
 
     return gradient[:, :, 0] * x + gradient[:, :, 1] * y
 
-def GradientCUDA(ix, iy, x, y):
+"""def GradientCUDA(ix, iy, x, y):
     v = cp.array([[0, 1], [0, -1], [1, 0], [-1, 0]])
     p = pTableCUDA[(pTableCUDA[ix%pSize] + iy)%pSize]
     gradient = v[p%4]
 
-    return gradient[:, :, 0] * x + gradient[:, :, 1] * y
+    return gradient[:, :, 0] * x + gradient[:, :, 1] * y"""
 
 #Worley Noise
 def GenerateVNoiseWorley(width, height, cellsize):
@@ -217,7 +217,7 @@ def GenerateVNoiseWorley(width, height, cellsize):
     x, y = np.meshgrid(x, y)
 
     data = Worley(x, y, cellsize)
-    data = (data - cp.min(data)) / (cp.max(data) - cp.min(data))
+    data = (data - np.min(data)) / (np.max(data) - np.min(data))
     return data
 
 def Worley(x, y, cellsize):
@@ -301,7 +301,7 @@ def LineFilter(data, xPeriod=1, yPeriod=1, power=1):
     xValue = x * (xPeriod/width)
     yValue = y * (yPeriod/height)
     data = np.sin((xValue + yValue + (data * power)) * np.pi)
-    data = (data - cp.min(data)) / (cp.max(data) - cp.min(data))
+    data = (data - np.min(data)) / (np.max(data) - np.min(data))
 
     return data
 
@@ -319,7 +319,7 @@ def RingFilter(data, period, power):
     yValue = (y - (height / 2)) / height
     distance = np.sqrt(xValue ** 2 + yValue ** 2)
     data = np.sin((2 * period * (distance + (data * power))) * np.pi)
-    data = (data - cp.min(data)) / (cp.max(data) - cp.min(data))
+    data = (data - np.min(data)) / (np.max(data) - np.min(data))
 
     return data
 
