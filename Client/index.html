@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+        <title>Noise Generator</title>
+    </head>
+    <body>
+        <!-- Header: Title + Tabs -->
+        <header>
+            <h1>Noise Generator</h1>
+            <nav class = "menu">
+                <button id="navAuditoryBtn">Auditory</button>
+                <button id="navPerlinBtn">Perlin</button>
+                <button id="navWaveletBtn">Wavelet</button>
+                <button id="navValueBtn">Value</button>
+                <button id="navOpenSimplexBtn">OpenSimplex</button>
+                <button id="navVoronoiBtn">Voronoi</button>
+            </nav>
+        </header>
+
+
+        <main>
+            <!-- Left: Canvas Area -->
+            <div id="canvasArea">
+                <!-- Audio Playback -->
+                <div id="audioPlayback">
+                    <input id="audioPlaybackSlider" type="range" step="0.01">
+                    <div id="audioPlaybackControls">
+                        <button id="audioPlaybackStopBtn">[ ]</button>
+                        <button id="audioPlaybackPauseBtn">| |</button>
+                        <button id="audioPlaybackPlayBtn"> > </button>
+                    </div>
+                    <button id="generateNoiseBtn">Generate</button>
+                </div>
+
+                <!-- Waveform -->
+                <canvas id="waveformDisplay">
+
+                </canvas>
+
+                <!-- Spectrogram -->
+                <canvas id="spectrogramDisplay">
+
+                </canvas>
+            </div>
+
+            <!-- Right: Controls Sidebar -->
+            <aside id="controlsSidebar">
+                <!-- Noise Type -->
+                <section id="noiseTypeSection">
+                    <h2>Noise Type</h2>
+                    <div id="noiseButtons">
+                        <button id="whiteNoiseBtn">White</button>
+                        <button id="pinkNoiseBtn">Pink</button>
+                        <button id="brownNoiseBtn">Brown</button>
+                        <button id="blueNoiseBtn">Blue</button>
+                    </div>
+                </section>
+
+                <hr>
+
+                <!-- Audio Settings -->
+                <section id="audioSettingsSection">
+                    <h2>Audio</h2>
+                    <div>
+                        <span>Volume</span>
+                        <input id="volumeSlider" type="range" min="0" max="100" value="50">
+                        <input id="volumeInput" type="number" min="0" max="100" value="50">
+                    </div>
+
+                    <div>
+                        <button id="samplingRateExpandToggle">+</button>
+                        <span>Sampling Rate</span>
+                        <input id="samplingRateSlider" type="range" min="8000" max="192000" value="44100" step="100">
+                        <input id="samplingRateInput" type="number" min="8000" max="192000" value="44100" step="100">
+                    </div>
+
+                    <ul id="samplingRateSelection">
+                        <li><button value = "8000">Telephone</button></li>
+                        <li><button value = "16000">Wideband</button></li>
+                        <li><button value = "22050">AM Radio</button></li>
+                        <li><button value = "32000">FM Radio</button></li>
+                        <li><button value = "44100">CD</button></li>
+                        <li><button value = "96000">HD1</button></li>
+                        <li><button value = "192000">HD2</button></li>
+                    </ul>
+
+                    <div>
+                        <span>Duration</span>
+                        <input id="durationSlider" type="range" min="1" max="30" value="5" step="0.1">
+                        <input id="durationInput" type="number" min="1" max="30" value="5" step="0.1">
+                    </div>
+                </section>
+
+                <hr>
+
+                <!-- Visual Settings -->
+                <section id="visualSettingsSection">
+                    <h2>Visual</h2>
+                    <label>
+                        <input id="showWaveformToggle" type="checkbox" checked="true">
+                        Show Waveform
+                    </label>
+
+                    <label>
+                        <input id="showSpectrogramToggle" type="checkbox" checked="true">
+                        Show Spectrogram
+                    </label>
+                </section>
+
+                <hr>
+
+                <!-- Description -->
+                <section id="descriptionSection">
+                    <h2 id="descriptionTitle">White Noise</h2>
+                    <p id="descriptionText">blah blah blah blah. . .</p>
+                </section>
+            </aside>
+        </main>
+
+        <script src="main.js"></script>
+    </body>
+</html>
