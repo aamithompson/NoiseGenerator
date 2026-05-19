@@ -1,0 +1,7 @@
+.waveformDisplay {
+    background-color: black;
+}
+
+.hideWaveformDisplay {
+    display: none;
+}

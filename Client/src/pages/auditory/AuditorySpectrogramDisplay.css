@@ -1,0 +1,7 @@
+.spectrogramDisplay {
+    background-color: black;
+}
+
+.hideSpectrogramDisplay {
+    display: none;
+}

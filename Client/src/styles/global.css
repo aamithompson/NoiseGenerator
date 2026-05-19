@@ -1,0 +1,60 @@
+html, body, #root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+:root {
+    --color-background: #E8E9EB;
+    --color-text: #313638;
+    --color-accent: #8e8984;
+    --color-surface: #D3D5D9;
+    --color-selected: #D3D5D9;
+}
+
+/*All elements defaulting to have a total width and height
+  to include content, padding, and borders.*/
+* {
+    box-sizing: border-box;
+}
+
+/*Ensure body takes up full viewport and 
+  has no margins or padding*/
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    border: var(--color-accent);
+}
+
+hr {
+    border: none;
+    border-top: 1px solid var(--color-accent);
+    width: 95%;
+    margin-top: 32px;
+    margin-bottom: 32px;
+}
+
+button {
+    border: 1px solid var(--color-accent);
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: var(--color-surface);
+}
+
+button:active {
+    background-color: var(--color-accent);
+    color: var(--color-background);
+    border-color: var(--color-accent);
+}

@@ -1,0 +1,19 @@
+.samplingRateSelection {
+    list-style: none;
+}
+
+.selectedSamplingRate {
+    background-color: var(--color-selected);
+}
+
+.samplingRateExpandToggleOn {
+    background-color: var(--color-selected);
+}
+
+.samplingRateSelectionCollapsed {
+    display: none;
+}
+
+.samplingRateSelectionExpanded {
+    display: block;
+}
