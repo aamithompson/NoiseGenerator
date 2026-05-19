@@ -1,0 +1,10 @@
+.controlsSidebar-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    border: 1px solid var(--color-accent);
+    width: 420px;
+    height: 100%;
+    padding-left: 8px;
+    padding-right: 8px;
+}
