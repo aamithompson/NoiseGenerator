@@ -1,9 +1,3 @@
-html, body, #root {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-}
-
 :root {
     --color-background: #E8E9EB;
     --color-text: #313638;
