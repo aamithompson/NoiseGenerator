@@ -2,7 +2,7 @@
 # Filename: Noise.py
 # Author(s): Aaron Thompson
 # Date Created: 1/12/2022
-# Date Last Updated: 2/2/2022
+# Date Last Updated: 5/21/2026
 # Description: If audio, generates noise into a 1-dimensional signal given a
 # duration(seconds). For visual, generates noise into a n x m matrix.
 # Audio Concepts
@@ -119,6 +119,7 @@ def GenerateVNoisePerlin(width, height, octaves=1, lacunarity=2.0, persistance=0
         #return GenerateVNoisePerlinCUDA(width, height, octaves, lacunarity, persistance, gridsize)
 
 def GenerateVNoisePerlinCPU(width, height, octaves=1, lacunarity=2.0, persistance=0.5, gridsize=DEFAULT_GRIDSIZE):
+    global pTableCPU
     pTableCPU = np.arange(pSize)
     np.random.shuffle(pTableCPU)
     pTableCPU = np.stack([pTableCPU, pTableCPU]).flatten()
@@ -144,6 +145,7 @@ def GenerateVNoisePerlinCPU(width, height, octaves=1, lacunarity=2.0, persistanc
     return data
 
 """def GenerateVNoisePerlinCUDA(width, height, octaves=1, lacunarity=2.0, persistance=0.5, gridsize=DEFAULT_GRIDSIZE):
+    global pTableCUDA
     pTableCUDA = cp.arange(pSize)
     cp.random.shuffle(pTableCUDA)
     pTableCUDA = cp.stack([pTableCUDA, pTableCUDA]).flatten()
@@ -188,7 +190,7 @@ def Perlin(x, y, comp=DEFAULT_COMP):
     n11 = Gradient(ix1, iy1, sx-1, sy-1, comp)
     x1 = Interpolate(n01, n11, sx, "fade")
 
-    return Interpolate(x0, x1, sy, "fade").T
+    return Interpolate(x0, x1, sy, "fade")
 
 def Gradient(ix, iy, x, y, comp=DEFAULT_COMP):
     if(comp.lower() == "cpu"):
@@ -198,7 +200,7 @@ def Gradient(ix, iy, x, y, comp=DEFAULT_COMP):
 
 def GradientCPU(ix, iy, x, y):
     v = np.array([[0, 1], [0, -1], [1, 0], [-1, 0]])
-    p = pTableCPU[(pTableCPU[ix%pSize] + iy)%pSize]
+    p = pTableCPU[((pTableCPU[ix%pSize] + iy)%pSize)]
     gradient = v[p%4]
 
     return gradient[:, :, 0] * x + gradient[:, :, 1] * y

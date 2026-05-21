@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from NoiseGeneration import NoiseColors as nsc
+from NoiseGeneration import Noise as ns
 from Enums import NoiseType
 
 app = Flask(__name__)
@@ -30,6 +31,29 @@ def generate_noise():
         'samplingRate': sampling_rate,
         'duration': duration,
         'noiseType': noise_type.value
+    })
+
+@app.route('/api/perlin', methods=['POST'])
+def generate_perlin():
+    data = request.get_json()
+    width = data['width']
+    height = data['height']
+    octaves = data['octaves']
+    lacunarity = data['lacunarity']
+    persistence = data['persistence']
+    filter = data['filter']
+    filterProperties = data['filterProperties']
+
+    perlin = ns.GenerateVNoisePerlin(width, height, octaves, lacunarity, persistence)
+    return jsonify({
+        'data': perlin.tolist(),
+        'width' : width,
+        'height' : height,
+        'octaves' : octaves,
+        'lacunarity' : lacunarity,
+        'persistence' : persistence,
+        'filter' : filter,
+        'filterProperties' : filterProperties
     })
 
 @app.route('/api/health', methods=['GET'])
