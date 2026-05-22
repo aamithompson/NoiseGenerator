@@ -13,11 +13,11 @@ import { createContext, useContext, useState } from "react"
 //------------------------------------------------------------------------------
 const PerlinSettingsContext = createContext();
 
-const DEFAULT_OCTAVES = 1;
+const DEFAULT_OCTAVES = 4;
 const DEFAULT_LACUNARITY = 2.0;
 const DEFAULT_PERSISTENCE=0.5
-const DEFAULT_WIDTH = 256;
-const DEFAULT_HEIGHT = 256;
+const DEFAULT_WIDTH = 128;
+const DEFAULT_HEIGHT = 128;
 const DEFAULT_FILTER = 0;
 
 // CONTEXT FUNCTION(s)

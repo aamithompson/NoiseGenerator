@@ -7,6 +7,8 @@
 // Description: Perlin page html.
 //==============================================================================
 import ControlsSidebar from '../../components/ControlsSidebar';
+import PerlinNoiseSetings from './PerlinNoiseSettings';
+import PerlinImageSettings from './PerlinImageSettings';
 import CanvasArea from '../../components/CanvasArea';
 import PerlinCanvasDisplay from './PerlinCanvasDisplay';
 import PerlinCanvasButtons from './PerlinCanvasButtons';
@@ -25,6 +27,8 @@ export default function PerlinPage() {
               <PerlinCanvasButtons/>
             </CanvasArea>
             <ControlsSidebar>
+              <PerlinNoiseSetings/>
+              <PerlinImageSettings/>
             </ControlsSidebar>
           </div>
         </PerlinImageProvider>

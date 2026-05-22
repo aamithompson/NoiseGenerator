@@ -20,6 +20,7 @@ export default function PerlinCanvasDisplay() {
             return;
         }
         
+        console.log(imageData)
         const canvasCtx = canvasRef.current.getContext('2d');
 
 // DRAW FUNCTION(s)
@@ -35,7 +36,7 @@ export default function PerlinCanvasDisplay() {
 
             for(let x = 0; x < WIDTH; x++) {
                 for(let y = 0; y < HEIGHT; y++) {
-                    const value = Math.floor(imageData.data[x][y] * 255);
+                    const value = Math.floor(imageData.data[y][x] * 255);
                     const index = (x + y * WIDTH) * 4;
                     canvasCtxImgData.data[index] = value;        // R
                     canvasCtxImgData.data[index + 1] = value;    // G

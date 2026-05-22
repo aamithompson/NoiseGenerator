@@ -40,7 +40,7 @@ DEFAULT_ATT = np.log10(2.0)*10
 DEFAULT_COMP = 'CPU'
 
 # Permutation Table
-pSize = 2**9
+pSize = 2**12
 pTableCPU = np.arange(pSize)
 np.random.shuffle(pTableCPU)
 pTableCPU = np.stack([pTableCPU, pTableCPU]).flatten()
@@ -50,7 +50,7 @@ pTableCPU = np.stack([pTableCPU, pTableCPU]).flatten()
 #pTableCUDA = cp.stack([pTableCUDA, pTableCUDA]).flatten()
 
 # Default arguments for visual
-DEFAULT_GRIDSIZE = 48
+DEFAULT_GRIDSIZE = 128
 
 # AUDIO FUNCTION(S)
 #-------------------------------------------------------------------------------
@@ -124,11 +124,13 @@ def GenerateVNoisePerlinCPU(width, height, octaves=1, lacunarity=2.0, persistanc
     np.random.shuffle(pTableCPU)
     pTableCPU = np.stack([pTableCPU, pTableCPU]).flatten()
 
-    x = np.linspace(0, width/gridsize, width) + 1
-    y = np.linspace(0, height/gridsize, height) + 1
+    offset_x = np.random.uniform(0, pSize)
+    offset_y = np.random.uniform(0, pSize)
+    x = np.linspace(0, width/gridsize, width) + offset_x
+    y = np.linspace(0, height/gridsize, height) + offset_y
     x, y = np.meshgrid(x, y)
 
-    data = np.zeros((width, height))
+    data = np.zeros((height, width))
     freq = 1
     amp = 1
     maxValue = 0
@@ -199,16 +201,18 @@ def Gradient(ix, iy, x, y, comp=DEFAULT_COMP):
         #return GradientCUDA(ix, iy, x, y)
 
 def GradientCPU(ix, iy, x, y):
-    v = np.array([[0, 1], [0, -1], [1, 0], [-1, 0]])
+    ix = ix.astype(int)
+    iy = iy.astype(int)
+    v = np.array([[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]])
     p = pTableCPU[((pTableCPU[ix%pSize] + iy)%pSize)]
-    gradient = v[p%4]
+    gradient = v[p%8]
 
     return gradient[:, :, 0] * x + gradient[:, :, 1] * y
 
 """def GradientCUDA(ix, iy, x, y):
-    v = cp.array([[0, 1], [0, -1], [1, 0], [-1, 0]])
+    v = cp.array([[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]])
     p = pTableCUDA[(pTableCUDA[ix%pSize] + iy)%pSize]
-    gradient = v[p%4]
+    gradient = v[p%8]
 
     return gradient[:, :, 0] * x + gradient[:, :, 1] * y"""
 
