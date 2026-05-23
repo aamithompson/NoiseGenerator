@@ -18,6 +18,7 @@ const PerlinImageContext = createContext();
 //------------------------------------------------------------------------------
 export function PerlinImageProvider({ children }) {
     const [imageData, setImageData] = useState(null);
+    const canvasRef = useRef(null);
 
     async function generateNoise(state) {
         const response = await fetch(serverURL + '/api/perlin', {
@@ -30,10 +31,23 @@ export function PerlinImageProvider({ children }) {
         setImageData(data);
     }
 
+    async function downloadImage() {
+        if(imageData == null || canvasRef == null) {
+            return;
+        }
+
+        const link = document.createElement('a');
+        link.download = `perlin_${imageData.width}x${imageData.height}.png`;
+        link.href = canvasRef.current.toDataURL('image/png');
+        link.click();
+    }
+
     return (
         <PerlinImageContext.Provider value={{
-            imageData, 
-            generateNoise
+            imageData,
+            canvasRef,
+            generateNoise,
+            downloadImage
         }}>
             {children}
         </PerlinImageContext.Provider>

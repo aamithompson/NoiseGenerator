@@ -2,16 +2,24 @@
 // Filename: PerlinNoiseSettings.jsx
 // Author: Aaron Thompson
 // Date Created: 5/21/2026
-// Last Updated: 5/21/2026
+// Last Updated: 5/22/2026
 //
 // Description: Noise Settings for the perlin page.
 //==============================================================================
+import './PerlinNoiseSettings.css'
+import { useState } from 'react';
 import { useSettings } from '../../context/PerlinSettingsContext'
+import { filterTypes } from '../../data/PerlinFilterTypes';
 //------------------------------------------------------------------------------
 // HTML FUNCTION(s)
 //------------------------------------------------------------------------------
 export default function PerlinNoiseSettings() {
-    const { octaves, setOctaves, lacunarity, setLacunarity, persistence, setPersistence } = useSettings();
+    const { octaves, setOctaves } = useSettings();
+    const { lacunarity, setLacunarity} = useSettings();
+    const { persistence, setPersistence } = useSettings();
+    const { selectedFilter, setSelectedFilter } = useSettings();
+
+    const [filterSelectionExpanded, setFilterSelectionExpanded] = useState(false);
 
     return (
         <section className="perlinNoiseSettings">
@@ -60,6 +68,28 @@ export default function PerlinNoiseSettings() {
                     onChange={e => setPersistence(parseFloat(e.target.value))}
                 />
             </div>
+
+            {/* Filters */}
+            <div>
+                <button 
+                    className={filterSelectionExpanded ? 'filterTypeExpandToggleOn' : 'filterTypeExpandToggleOff'}
+                    onClick={() => setFilterSelectionExpanded(!filterSelectionExpanded)}
+                >
+                    {filterSelectionExpanded ? '-' : '+'}
+                </button>
+                <span>Filter: {filterTypes[selectedFilter].label}</span>
+            </div>
+
+            <ul className={`filterTypeSelection ${filterSelectionExpanded ? 'filterTypeSelectionExpanded' : 'filterTypeSelectionCollapsed'}`}>
+                {filterTypes.map((filter, index) => (
+                    <li key={filter.label}><button
+                        className={index === selectedFilter ? 'selectedFilter' : ''}
+                        onClick={() => setSelectedFilter(index)}
+                    >
+                        {filter.label}
+                    </button></li>
+                ))}
+            </ul>
         </section>
     );
 }

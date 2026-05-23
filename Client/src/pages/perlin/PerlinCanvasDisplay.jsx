@@ -2,18 +2,18 @@
 // Filename: PerlinCanvasDisplay.jsx
 // Author: Aaron Thompson
 // Date Created: 5/20/2026
-// Last Updated: 5/21/2026
+// Last Updated: 5/22/2026
 //
 // Description: Canvas display for perlin noise after generation.
 //==============================================================================
+import './PerlinCanvasDisplay.css'
 import { useImage } from '../../context/PerlinImageContext';
 import { useRef, useEffect } from 'react'
 //------------------------------------------------------------------------------
 export default function PerlinCanvasDisplay() {
 // VARIABLE(s)
 //------------------------------------------------------------------------------
-    const { imageData } = useImage();
-    const canvasRef = useRef(null);
+    const { imageData, canvasRef } = useImage();
 
     useEffect(() => {
         if(imageData == null || canvasRef == null) {
@@ -60,12 +60,14 @@ export default function PerlinCanvasDisplay() {
 //------------------------------------------------------------------------------
 
     return (
-        <div className="perlinCanvasWrapper">
-            <canvas 
-                className="perlinCanvasDisplay"
-                ref={canvasRef}
-                style={{ flex: 1 }}
-            />
+        <div className="perlinCanvasArea">
+            <div className="perlinCanvasWrapper">
+                <canvas 
+                    className="perlinCanvasDisplay"
+                    ref={canvasRef}
+                    style={{ flex: 1 }}
+                />
+            </div>
         </div>
     );
 }
