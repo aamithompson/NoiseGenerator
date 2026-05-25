@@ -1,0 +1,25 @@
+.perlinCanvasButtons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.generateNoiseBtn {
+    margin-top: 8px;
+    width: 256px;
+}
+
+.inactiveGenerateNoiseBtn {
+    background-color: var(--color-selected);
+    pointer-events: none;
+}
+
+.downloadBtn{
+    margin-bottom: 32px;
+    width: 256px;
+}
+
+.inactiveDownloadBtn{
+    background-color: var(--color-selected);
+    pointer-events: none;
+}

@@ -2,7 +2,7 @@
 # Filename: Noise.py
 # Author(s): Aaron Thompson
 # Date Created: 1/12/2022
-# Date Last Updated: 2/2/2022
+# Date Last Updated: 5/25/2026
 # Description: If audio, generates noise into a 1-dimensional signal given a
 # duration(seconds). For visual, generates noise into a n x m matrix.
 # Audio Concepts
@@ -18,6 +18,7 @@ import numpy as np
 from PIL import Image as img
 #from numpy.lib.function_base import _angle_dispatcher
 from numpy.random import permutation
+import random
 
 # CONSTANT(S)
 #-------------------------------------------------------------------------------
@@ -40,7 +41,7 @@ DEFAULT_ATT = np.log10(2.0)*10
 DEFAULT_COMP = 'CPU'
 
 # Permutation Table
-pSize = 2**9
+pSize = 2**12
 pTableCPU = np.arange(pSize)
 np.random.shuffle(pTableCPU)
 pTableCPU = np.stack([pTableCPU, pTableCPU]).flatten()
@@ -50,7 +51,7 @@ pTableCPU = np.stack([pTableCPU, pTableCPU]).flatten()
 #pTableCUDA = cp.stack([pTableCUDA, pTableCUDA]).flatten()
 
 # Default arguments for visual
-DEFAULT_GRIDSIZE = 48
+DEFAULT_GRIDSIZE = 128
 
 # AUDIO FUNCTION(S)
 #-------------------------------------------------------------------------------
@@ -119,15 +120,18 @@ def GenerateVNoisePerlin(width, height, octaves=1, lacunarity=2.0, persistance=0
         #return GenerateVNoisePerlinCUDA(width, height, octaves, lacunarity, persistance, gridsize)
 
 def GenerateVNoisePerlinCPU(width, height, octaves=1, lacunarity=2.0, persistance=0.5, gridsize=DEFAULT_GRIDSIZE):
+    global pTableCPU
     pTableCPU = np.arange(pSize)
     np.random.shuffle(pTableCPU)
     pTableCPU = np.stack([pTableCPU, pTableCPU]).flatten()
 
-    x = np.linspace(0, width/gridsize, width) + 1
-    y = np.linspace(0, height/gridsize, height) + 1
+    offset_x = np.random.uniform(0, pSize)
+    offset_y = np.random.uniform(0, pSize)
+    x = np.linspace(0, width/gridsize, width) + offset_x
+    y = np.linspace(0, height/gridsize, height) + offset_y
     x, y = np.meshgrid(x, y)
 
-    data = np.zeros((width, height))
+    data = np.zeros((height, width))
     freq = 1
     amp = 1
     maxValue = 0
@@ -141,9 +145,11 @@ def GenerateVNoisePerlinCPU(width, height, octaves=1, lacunarity=2.0, persistanc
 
     data /= maxValue
     data = (data - np.min(data)) / (np.max(data) - np.min(data))
+    print(data.shape)
     return data
 
 """def GenerateVNoisePerlinCUDA(width, height, octaves=1, lacunarity=2.0, persistance=0.5, gridsize=DEFAULT_GRIDSIZE):
+    global pTableCUDA
     pTableCUDA = cp.arange(pSize)
     cp.random.shuffle(pTableCUDA)
     pTableCUDA = cp.stack([pTableCUDA, pTableCUDA]).flatten()
@@ -188,7 +194,7 @@ def Perlin(x, y, comp=DEFAULT_COMP):
     n11 = Gradient(ix1, iy1, sx-1, sy-1, comp)
     x1 = Interpolate(n01, n11, sx, "fade")
 
-    return Interpolate(x0, x1, sy, "fade").T
+    return Interpolate(x0, x1, sy, "fade")
 
 def Gradient(ix, iy, x, y, comp=DEFAULT_COMP):
     if(comp.lower() == "cpu"):
@@ -197,16 +203,18 @@ def Gradient(ix, iy, x, y, comp=DEFAULT_COMP):
         #return GradientCUDA(ix, iy, x, y)
 
 def GradientCPU(ix, iy, x, y):
-    v = np.array([[0, 1], [0, -1], [1, 0], [-1, 0]])
-    p = pTableCPU[(pTableCPU[ix%pSize] + iy)%pSize]
-    gradient = v[p%4]
+    ix = ix.astype(int)
+    iy = iy.astype(int)
+    v = np.array([[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]])
+    p = pTableCPU[((pTableCPU[ix%pSize] + iy)%pSize)]
+    gradient = v[p%8]
 
     return gradient[:, :, 0] * x + gradient[:, :, 1] * y
 
 """def GradientCUDA(ix, iy, x, y):
-    v = cp.array([[0, 1], [0, -1], [1, 0], [-1, 0]])
+    v = cp.array([[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]])
     p = pTableCUDA[(pTableCUDA[ix%pSize] + iy)%pSize]
-    gradient = v[p%4]
+    gradient = v[p%8]
 
     return gradient[:, :, 0] * x + gradient[:, :, 1] * y"""
 
@@ -296,7 +304,7 @@ def LineFilter(data, xPeriod=1, yPeriod=1, power=1):
     height = data.shape[1]
     x = np.arange(width)
     y = np.arange(height)
-    x, y = np.meshgrid(x, y)
+    x, y = np.meshgrid(x, y, indexing='ij')
 
     xValue = x * (xPeriod/width)
     yValue = y * (yPeriod/height)
@@ -313,7 +321,7 @@ def RingFilter(data, period, power):
     height = data.shape[1]
     x = np.arange(width)
     y = np.arange(height)
-    x, y = np.meshgrid(x, y)
+    x, y = np.meshgrid(x, y, indexing='ij')
 
     xValue = (x - (width / 2)) / width
     yValue = (y - (height / 2)) / height
@@ -324,44 +332,52 @@ def RingFilter(data, period, power):
     return data
 
 #Composite Visual Functions
-def GenerateFlowField(width, height, scale=32, octaves=1, lacunarity=2.0, persistance=0.5, gridsize=DEFAULT_GRIDSIZE):
-    columns = int(width/scale) + 1
-    rows = int(height/scale) + 1
-    gridsize = (int(gridsize/scale) + 1) * 2
-    
-    data = GenerateVNoisePerlin(columns, rows, octaves, lacunarity, persistance, gridsize)
-    data = np.repeat(np.repeat(data, scale, axis=0), scale, axis=1)
-    data = data[:width, :height]
+def GenerateFlowField(width, height, octaves=1, lacunarity=2.0, persistance=0.5, pcount=1024, psteps=128, pstepsize=0.5, pmagnitude=0.0375, gridsize=DEFAULT_GRIDSIZE):
+    data = GenerateVNoisePerlin(width, height, octaves, lacunarity, persistance, gridsize)
+    flow = np.zeros((height, width))
+    pmult = (width + height)/512
+    for i in range(0, int(pcount*pmult*pmult)):
+        x = random.randint(0, width-1)
+        y = random.randint(0, height-1)
+        ix = x
+        iy = y
+        
+        for j in range(0, int(psteps/pmult)):
+            angle = data[iy][ix] * -2 * np.pi
+            x += np.cos(angle) * pstepsize * pmult
+            y += np.sin(angle) * pstepsize * pmult
 
-    return data
+            ix = x.astype(int)
+            iy = y.astype(int)
+            if(ix < 0 or ix >= width or iy < 0 or iy >= height):
+                break
+
+            flow[iy][ix] += pmagnitude*pmult
+
+    return flow
 
 def GenerateMarble(width, height, octaves=8, lacunarity=1.5, persistance=0.8, xPeriod=8, yPeriod=8, power=5, gridsize=DEFAULT_GRIDSIZE, comp=DEFAULT_COMP):
-    return LineFilter(GenerateVNoisePerlin(width, height, 20, 1.5, 0.8, gridsize, comp), 10, 10, 5)
+    return LineFilter(GenerateVNoisePerlin(width, height, octaves, lacunarity, persistance, gridsize, comp), xPeriod, yPeriod, power)
 
-def GenerateWood(width, height, ratioWH=4/16, octaves=8, lacunarity=1.5, persistance=0.8, gridsize=DEFAULT_GRIDSIZE, comp=DEFAULT_COMP):
-    LayerBase = []
-    if(ratioWH < 1):
-        LayerBase = GenerateVNoisePerlin(width, int(height/ratioWH), octaves, lacunarity, persistance, gridsize, comp)
-    else:
-        LayerBase = GenerateVNoisePerlin(width, int(height*ratioWH), octaves, lacunarity, persistance, gridsize, comp)
+def GenerateWood(width, height, ratioWH=1/8, octaves=8, lacunarity=1.5, persistance=0.8, gridsize=DEFAULT_GRIDSIZE, comp=DEFAULT_COMP):
+    LayerBase = GenerateVNoisePerlin(width, int(height*ratioWH), octaves, lacunarity, persistance, gridsize, comp)
     LayerBase = np.array(img.fromarray(LayerBase).resize((width, height)))
 
-    LayerLines = []
-    if(ratioWH < 1):
-        LayerLines = GenerateVNoisePerlin(width, int(height/ratioWH), 2, lacunarity, persistance, gridsize, comp)
-    else:
-        LayerLines = GenerateVNoisePerlin(width, int(height*ratioWH), 2, lacunarity, persistance, gridsize, comp)
-    LayerLines = np.array(img.fromarray(LayerLines).resize((width, height)))
-    LayerLines *= 2
-    LayerLines -= np.floor(LayerLines)
-    LayerLines = np.clip(LayerLines, 0, 0.25) - (1 - np.clip(LayerLines, 0.75, 1))
+    #y = np.linspace(0, height/gridsize, height)
+    #x, y = np.meshgrid(np.zeros(width), y)
+    x = np.linspace(0, width/gridsize, width)
+    x, y = np.meshgrid(x, np.zeros(height))
+    LayerWaves = GenerateVNoisePerlin(width, height, octaves, lacunarity, persistance, gridsize, comp)
+    LayerWaves = np.array(img.fromarray(LayerWaves).resize((width, height)))
+    LayerWaves = np.sin((x * 64) + LayerWaves * 35)
+    #LayerWaves = (LayerWaves + 1)/2
 
-    LayerGrain = GenerateVNoiseWhite(int(width/4), int(height/4), comp)
+
+    LayerGrain = GenerateVNoiseWhite(int(width*ratioWH), height, comp)
     LayerGrain = np.array(img.fromarray(LayerGrain).resize((width, height)))
-    LayerGrain = (LayerGrain - np.min(LayerGrain)) / (np.max(LayerGrain) - np.min(LayerGrain))
-    LayerGrain = np.clip(LayerGrain, 0, 0.2)
+    LayerGrain = np.where(LayerGrain > 0.7, LayerGrain, LayerGrain * 0)
 
-    data = np.clip(LayerBase * (1) + LayerLines * (-0.85) + LayerGrain * (-0.2), 0, 1) * 0.6 + 0.2
+    data = np.clip(LayerBase * (1) - LayerWaves * (0.10) + LayerGrain * (-0.2), 0, 1) * 0.6 + 0.2
     return data
 
 #===============================================================================

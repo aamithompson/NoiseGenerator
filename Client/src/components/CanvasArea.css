@@ -1,21 +1,16 @@
 canvas {
     border: 1px solid var(--color-accent);
-    box-sizing: border-box;
+    height: 100%;
+    flex: 1;
 }
 
 .canvasArea {
-    display: flex;
-    min-height: 0;
-    height: 100%;
     flex: 1;
 }
 
 .canvasArea-content {
     display: flex;
     flex-direction: column;
-    flex: 1;
-    min-height: 0;
     height: 100%;
-    box-sizing: border-box;
     border: 1px solid var(--color-accent);
 }

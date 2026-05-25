@@ -6,6 +6,7 @@
 //
 // Description: Auditory page html.
 //==============================================================================
+import './AuditoryPage.css'
 import { AuditorySettingsProvider } from '../../context/AuditorySettingsContext';
 import { PlaybackProvider } from '../../context/PlaybackContext'
 import ControlsSidebar from '../../components/ControlsSidebar';
@@ -24,20 +25,22 @@ export default function AuditoryPage() {
     return (
         <AuditorySettingsProvider>
           <PlaybackProvider>
-            <CanvasArea>
-              <AuditoryPlaybackDisplay/>
-              <AuditoryWaveformDisplay/>
-              <AuditorySpectrogramDisplay/>
-            </CanvasArea>
-            <ControlsSidebar>
-              <AuditoryNoiseSettings/>
-              <hr/>
-              <AuditoryAudioSettings/>
-              <hr/>
-              <AuditoryVisualSettings/>
-              <hr/>
-              <AuditoryDescription/>
-            </ControlsSidebar>
+            <div className="auditoryContent">
+              <CanvasArea>
+                <AuditoryPlaybackDisplay/>
+                <AuditoryWaveformDisplay/>
+                <AuditorySpectrogramDisplay/>
+              </CanvasArea>
+              <ControlsSidebar>
+                <AuditoryNoiseSettings/>
+                <hr/>
+                <AuditoryAudioSettings/>
+                <hr/>
+                <AuditoryVisualSettings/>
+                <hr/>
+                <AuditoryDescription/>
+              </ControlsSidebar>
+            </div>
           </PlaybackProvider>
         </AuditorySettingsProvider>
     );

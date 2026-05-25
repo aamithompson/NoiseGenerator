@@ -2,7 +2,7 @@
 // Filename: AuditoryAudioSettings.jsx
 // Author: Aaron Thompson
 // Date Created: 5/14/2026
-// Last Updated: 5/18/2026
+// Last Updated: 5/25/2026
 //
 // Description: Audio Settings for the auditory page.
 //==============================================================================
@@ -10,6 +10,8 @@ import './AuditoryAudioSettings.css';
 import {useSettings} from '../../context/AuditorySettingsContext'
 import {usePlayback} from '../../context/PlaybackContext'
 import { useState } from "react";
+
+import ANConstraints from "../../../../Shared/Constraints/AuditoryNoiseConstraints.json";
 //------------------------------------------------------------------------------
 // VARIABLE(s)
 //------------------------------------------------------------------------------
@@ -32,7 +34,7 @@ export default function AuditoryAudioSettings() {
     const { gainNodeRef } = usePlayback();
 
     const [samplingRateSelectionExpanded, setSamplingRateSelectionExpanded] = useState(false);
-
+    const settings = ANConstraints.settings; 
     return (
         <section className="audioSettingsSection">
             <h2>Audio</h2>
@@ -41,7 +43,7 @@ export default function AuditoryAudioSettings() {
             <div>
                 <span>Volume</span>
                 <input 
-                    type="range" min="0" max="100"
+                    type="range" min={settings.volume.min} max={settings.volume.max}
                     value={volume}
                     onChange={e => {
                         setVolume(parseFloat(e.target.value));
@@ -49,7 +51,7 @@ export default function AuditoryAudioSettings() {
                     }}
                 />
                 <input 
-                    type="number" min="0" max="100"
+                    type="number" min={settings.volume.min} max={settings.volume.max}
                     value={volume}
                     onChange={e => {
                         setVolume(parseFloat(e.target.value));
@@ -68,12 +70,12 @@ export default function AuditoryAudioSettings() {
                 </button>
                 <span>Sampling Rate</span>
                 <input 
-                    type="range" min="8000" max="192000" step="100"
+                    type="range" min={settings.samplingRate.min} max={settings.samplingRate.max} step="100"
                     value={samplingRate}
                     onChange={e => setSamplingRate(parseInt(e.target.value))}
                 />
                 <input 
-                    type="number" min="8000" max="192000" step="100"
+                    type="number" min={settings.samplingRate.min} max={settings.samplingRate.max} step="100"
                     value={samplingRate}
                     onChange={e => setSamplingRate(parseInt(e.target.value))}
                 />
@@ -94,12 +96,12 @@ export default function AuditoryAudioSettings() {
             <div>
                 <span>Duration</span>
                 <input 
-                    type="range" min="1" max="30" step="0.1"
+                    type="range" min={settings.duration.min} max={settings.duration.max} step="0.1"
                     value={duration}
                     onChange={e => setDuration(parseFloat(e.target.value))}
                 />
                 <input
-                    type="number" min="1" max="30" step="0.1"
+                    type="number" min={settings.duration.min} max={settings.duration.max} step="0.1"
                     value={duration}
                     onChange={e => setDuration(parseFloat(e.target.value))}
                 />

@@ -1,9 +1,14 @@
+.controlsSidebar {
+    flex-shrink: 0;
+    width: 420px;
+    height: calc(100dvh - var(--header-height, 0px));
+}
+
 .controlsSidebar-content {
     display: flex;
     flex-direction: column;
-    flex: 1;
     border: 1px solid var(--color-accent);
-    width: 420px;
+    width: 100%;
     height: 100%;
     padding-left: 8px;
     padding-right: 8px;

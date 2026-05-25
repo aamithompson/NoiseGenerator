@@ -30,7 +30,14 @@ export default function AuditorySpectrogramDisplay() {
         const spectrogramBufferLength = analyserNodeRef.current.frequencyBinCount;
         const spectrogramData = new Uint8Array(spectrogramBufferLength);
         const waveformBufferLength = analyserNodeRef.current.fftSize;
-        const waveformData = new Uint8Array(waveformBufferLength)
+        const waveformData = new Uint8Array(waveformBufferLength);
+
+        const resizeObserver = new ResizeObserver(() => {
+            spectrogramCanvas.width = spectrogramCanvas.clientWidth;
+            spectrogramCanvas.height = spectrogramCanvas.clientHeight;
+        });
+        resizeObserver.observe(spectrogramCanvas);
+
         let animationId;
 
 // DRAW FUNCTION(s)
@@ -105,7 +112,10 @@ export default function AuditorySpectrogramDisplay() {
 
 // DESTRUCTOR
 //------------------------------------------------------------------------------
-        return () => cancelAnimationFrame(animationId);
+        return () => {
+             cancelAnimationFrame(animationId);
+             resizeObserver.disconnect();
+        }
     }, [analyserNodeRef.current]);
 
 // HTML FUNCTION(s)
@@ -115,6 +125,7 @@ export default function AuditorySpectrogramDisplay() {
         <canvas 
             className={`spectrogramDisplay ${!showSpectrogram ? "hideSpectrogramDisplay" : ""}`}
             ref={canvasRef}
+            style={{ flex: 1 }}
         />
     );
 }

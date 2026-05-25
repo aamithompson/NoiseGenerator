@@ -1,0 +1,31 @@
+{
+    "settings": {
+        "samplingRate": {
+            "type": "int",
+            "min": 8000,
+            "max": 192000,
+            "default": 44100
+        },
+
+        "duration": {
+            "type": "float",
+            "min": 1.0,
+            "max": 30.0,
+            "default": 5.0
+        },
+
+        "volume": {
+            "type": "int",
+            "min": 0,
+            "max": 100,
+            "default": 50
+        },
+
+        "noiseType": {
+            "type": "int",
+            "min": 0,
+            "max": 3,
+            "default": 0
+        }
+    }
+}

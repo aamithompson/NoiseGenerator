@@ -1,0 +1,19 @@
+.filterTypeSelection {
+    list-style: none;
+}
+
+.selectedFilter {
+    background-color: var(--color-selected);
+}
+
+.filterTypeExpandToggleOn {
+    background-color: var(--color-selected);
+}
+
+.filterTypeSelectionCollapsed {
+    display: none;
+}
+
+.filterTypeSelectionExpanded {
+    display: block;
+}

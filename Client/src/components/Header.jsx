@@ -2,7 +2,7 @@
 // Filename: Header.jsx
 // Author: Aaron Thompson
 // Date Created: 5/13/2026
-// Last Updated: 5/18/2026
+// Last Updated: 5/20/2026
 //
 // Description: Header component for the website which contains the website
 // title and navigation bar.
@@ -24,14 +24,13 @@ const pages = [
 
 // HTML FUNCTION(s)
 //------------------------------------------------------------------------------
-export default function Header() {
+export default function Header({ref}){
     const navigate = useNavigate();
-
     const { serverReady } = useServerStatus();
 
     return (
     //<!-- Header: Title + Tabs -->
-        <header>
+        <header ref={ref}>
             <h1>
                 Noise Generator
                 <div className={`serverConnectionNotification ${serverReady ? "hideServerConnectionNotification" : ""}`}>

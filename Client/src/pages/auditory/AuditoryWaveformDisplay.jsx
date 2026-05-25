@@ -42,6 +42,13 @@ export default function AuditoryWaveformDisplay() {
 
         const bufferLength = analyserNodeRef.current.fftSize;
         const waveformData = new Uint8Array(bufferLength);
+
+        const resizeObserver = new ResizeObserver(() => {
+            waveformCanvas.width = waveformCanvas.clientWidth;
+            waveformCanvas.height = waveformCanvas.clientHeight;
+        });
+        resizeObserver.observe(waveformCanvas);
+
         let animationId;
 
 // DRAW FUNCTION(s)
@@ -88,7 +95,10 @@ export default function AuditoryWaveformDisplay() {
 
 // DESTRUCTOR
 //------------------------------------------------------------------------------
-        return () => cancelAnimationFrame(animationId);
+        return () => { 
+            cancelAnimationFrame(animationId);
+            resizeObserver.disconnect();
+        }
     }, [analyserNodeRef.current]);
 
 // HTML FUNCTION(s)
@@ -97,6 +107,7 @@ export default function AuditoryWaveformDisplay() {
         <canvas 
             className={`waveformDisplay ${!showWaveform ? "hideWaveformDisplay" : ""}`}
             ref={canvasRef}
+            style={{ flex: 1 }}
         />
     );
 }
