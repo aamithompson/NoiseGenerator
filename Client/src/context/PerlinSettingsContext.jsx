@@ -2,33 +2,30 @@
 // Filename: PerlinSettingsContext.jsx
 // Author: Aaron Thompson
 // Date Created: 5/21/2026
-// Last Updated: 5/21/2026
+// Last Updated: 5/25/2026
 //
 // Description: Holds the state variables for the perlin page to pass between
 // components and functions.
 //==============================================================================
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useState } from "react";
+
+import PNConstraints from "../../../Shared/Constraints/PerlinNoiseConstraints.json";
 //------------------------------------------------------------------------------
 // VARIABLE(s)
 //------------------------------------------------------------------------------
 const PerlinSettingsContext = createContext();
 
-const DEFAULT_OCTAVES = 8;
-const DEFAULT_LACUNARITY = 2.0;
-const DEFAULT_PERSISTENCE=0.5
-const DEFAULT_WIDTH = 128;
-const DEFAULT_HEIGHT = 128;
-const DEFAULT_FILTER = 0;
+const settings = PNConstraints.settings;
 
 // CONTEXT FUNCTION(s)
 //------------------------------------------------------------------------------
 export function PerlinSettingsProvider({ children }) {
-    const[octaves, setOctaves] = useState(DEFAULT_OCTAVES);
-    const[lacunarity, setLacunarity] = useState(DEFAULT_LACUNARITY);
-    const[persistence, setPersistence] = useState(DEFAULT_PERSISTENCE);
-    const[width, setWidth] = useState(DEFAULT_WIDTH);
-    const[height, setHeight] = useState(DEFAULT_HEIGHT);
-    const[selectedFilter, setSelectedFilter] = useState(DEFAULT_FILTER);
+    const[octaves, setOctaves] = useState(settings.octaves.default);
+    const[lacunarity, setLacunarity] = useState(settings.lacunarity.default);
+    const[persistence, setPersistence] = useState(settings.persistence.default);
+    const[width, setWidth] = useState(settings.width.default);
+    const[height, setHeight] = useState(settings.height.default);
+    const[selectedFilter, setSelectedFilter] = useState(settings.filter.default);
 
     return (
         <PerlinSettingsContext.Provider value={{ 

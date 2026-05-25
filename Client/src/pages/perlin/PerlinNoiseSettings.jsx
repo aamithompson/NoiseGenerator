@@ -10,6 +10,8 @@ import './PerlinNoiseSettings.css'
 import { useState } from 'react';
 import { useSettings } from '../../context/PerlinSettingsContext'
 import { filterTypes } from '../../data/PerlinFilterTypes';
+
+import PNConstraints from "../../../../Shared/Constraints/PerlinNoiseConstraints.json";
 //------------------------------------------------------------------------------
 // HTML FUNCTION(s)
 //------------------------------------------------------------------------------
@@ -20,6 +22,7 @@ export default function PerlinNoiseSettings() {
     const { selectedFilter, setSelectedFilter } = useSettings();
 
     const [filterSelectionExpanded, setFilterSelectionExpanded] = useState(false);
+    const settings = PNConstraints.settings;
 
     return (
         <section className="perlinNoiseSettings">
@@ -28,12 +31,12 @@ export default function PerlinNoiseSettings() {
             <div>
                 <span>Octaves</span>
                 <input 
-                    type="range" min="1" max="16" step="1"
+                    type="range" min={settings.octaves.min} max={settings.octaves.max} step="1"
                     value={octaves}
                     onChange={e => setOctaves(parseInt(e.target.value))}
                 />
                 <input
-                    type="number" min="1" max="16" step="1"
+                    type="number" min={settings.octaves.min} max={settings.octaves.max} step="1"
                     value={octaves}
                     onChange={e => setOctaves(parseInt(e.target.value))}
                 />
@@ -43,12 +46,12 @@ export default function PerlinNoiseSettings() {
             <div>
                 <span>Lacunarity</span>
                 <input 
-                    type="range" min="1" max="4" step="0.1"
+                    type="range" min={settings.lacunarity.min} max={settings.lacunarity.max} step="0.1"
                     value={lacunarity}
                     onChange={e => setLacunarity(parseFloat(e.target.value))}
                 />
                 <input
-                    type="number" min="1" max="4" step="0.1"
+                    type="number" min={settings.lacunarity.min} max={settings.lacunarity.max} step="0.1"
                     value={lacunarity}
                     onChange={e => setLacunarity(parseFloat(e.target.value))}
                 />
@@ -58,12 +61,12 @@ export default function PerlinNoiseSettings() {
             <div>
                 <span>Persistence</span>
                 <input 
-                    type="range" min="0" max="1" step="0.05"
+                    type="range" min={settings.persistence.min} max={settings.persistence.max} step="0.05"
                     value={persistence}
                     onChange={e => setPersistence(parseFloat(e.target.value))}
                 />
                 <input
-                    type="number" min="0" max="1" step="0.05"
+                    type="number" min={settings.persistence.min} max={settings.persistence.max} step="0.05"
                     value={persistence}
                     onChange={e => setPersistence(parseFloat(e.target.value))}
                 />

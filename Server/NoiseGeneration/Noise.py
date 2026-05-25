@@ -2,7 +2,7 @@
 # Filename: Noise.py
 # Author(s): Aaron Thompson
 # Date Created: 1/12/2022
-# Date Last Updated: 5/21/2026
+# Date Last Updated: 5/25/2026
 # Description: If audio, generates noise into a 1-dimensional signal given a
 # duration(seconds). For visual, generates noise into a n x m matrix.
 # Audio Concepts
@@ -145,6 +145,7 @@ def GenerateVNoisePerlinCPU(width, height, octaves=1, lacunarity=2.0, persistanc
 
     data /= maxValue
     data = (data - np.min(data)) / (np.max(data) - np.min(data))
+    print(data.shape)
     return data
 
 """def GenerateVNoisePerlinCUDA(width, height, octaves=1, lacunarity=2.0, persistance=0.5, gridsize=DEFAULT_GRIDSIZE):
@@ -303,7 +304,7 @@ def LineFilter(data, xPeriod=1, yPeriod=1, power=1):
     height = data.shape[1]
     x = np.arange(width)
     y = np.arange(height)
-    x, y = np.meshgrid(x, y)
+    x, y = np.meshgrid(x, y, indexing='ij')
 
     xValue = x * (xPeriod/width)
     yValue = y * (yPeriod/height)
@@ -320,7 +321,7 @@ def RingFilter(data, period, power):
     height = data.shape[1]
     x = np.arange(width)
     y = np.arange(height)
-    x, y = np.meshgrid(x, y)
+    x, y = np.meshgrid(x, y, indexing='ij')
 
     xValue = (x - (width / 2)) / width
     yValue = (y - (height / 2)) / height
@@ -333,7 +334,7 @@ def RingFilter(data, period, power):
 #Composite Visual Functions
 def GenerateFlowField(width, height, octaves=1, lacunarity=2.0, persistance=0.5, pcount=1024, psteps=128, pstepsize=0.5, pmagnitude=0.0375, gridsize=DEFAULT_GRIDSIZE):
     data = GenerateVNoisePerlin(width, height, octaves, lacunarity, persistance, gridsize)
-    flow = np.zeros((width, height))
+    flow = np.zeros((height, width))
     pmult = (width + height)/512
     for i in range(0, int(pcount*pmult*pmult)):
         x = random.randint(0, width-1)
@@ -342,7 +343,7 @@ def GenerateFlowField(width, height, octaves=1, lacunarity=2.0, persistance=0.5,
         iy = y
         
         for j in range(0, int(psteps/pmult)):
-            angle = data[ix][iy] * 2 * np.pi
+            angle = data[iy][ix] * -2 * np.pi
             x += np.cos(angle) * pstepsize * pmult
             y += np.sin(angle) * pstepsize * pmult
 
@@ -351,7 +352,7 @@ def GenerateFlowField(width, height, octaves=1, lacunarity=2.0, persistance=0.5,
             if(ix < 0 or ix >= width or iy < 0 or iy >= height):
                 break
 
-            flow[ix][iy] += pmagnitude*pmult
+            flow[iy][ix] += pmagnitude*pmult
 
     return flow
 
@@ -363,9 +364,9 @@ def GenerateWood(width, height, ratioWH=1/8, octaves=8, lacunarity=1.5, persista
     LayerBase = np.array(img.fromarray(LayerBase).resize((width, height)))
 
     #y = np.linspace(0, height/gridsize, height)
-    #x, y = np.meshgrid(np.zeros(height), y)
+    #x, y = np.meshgrid(np.zeros(width), y)
     x = np.linspace(0, width/gridsize, width)
-    x, y = np.meshgrid(x, np.zeros(width))
+    x, y = np.meshgrid(x, np.zeros(height))
     LayerWaves = GenerateVNoisePerlin(width, height, octaves, lacunarity, persistance, gridsize, comp)
     LayerWaves = np.array(img.fromarray(LayerWaves).resize((width, height)))
     LayerWaves = np.sin((x * 64) + LayerWaves * 35)

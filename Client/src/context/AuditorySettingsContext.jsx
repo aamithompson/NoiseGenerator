@@ -8,22 +8,22 @@
 // components and functions.
 //==============================================================================
 import { createContext, useContext, useState } from "react"
+
+import ANConstraints from "../../../Shared/Constraints/AuditoryNoiseConstraints.json";
 //------------------------------------------------------------------------------
 // VARIABLE(s)
 //------------------------------------------------------------------------------
 const AuditorySettingsContext = createContext()
 
-const STARTING_VOLUME = 50;
-const STARTING_SAMPLING_RATE = 44100;
-const STARTING_DURATION = 5;
+const settings = ANConstraints.settings; 
 
 // CONTEXT FUNCTION(s)
 //------------------------------------------------------------------------------
 export function AuditorySettingsProvider({ children }) {
-    const[selectedNoise, setSelectedNoise] = useState(0);
-    const[volume, setVolume] = useState(STARTING_VOLUME);
-    const[samplingRate, setSamplingRate] = useState(STARTING_SAMPLING_RATE);
-    const[duration, setDuration] = useState(STARTING_DURATION);
+    const[selectedNoise, setSelectedNoise] = useState(settings.noiseType.default);
+    const[volume, setVolume] = useState(settings.volume.default);
+    const[samplingRate, setSamplingRate] = useState(settings.samplingRate.default);
+    const[duration, setDuration] = useState(settings.duration.default);
     const[showWaveform, setShowWaveform] = useState(true);
     const[showSpectrogram, setShowSpectrogram] = useState(true);
 
