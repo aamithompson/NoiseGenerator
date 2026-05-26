@@ -50,8 +50,8 @@ def validate(key, value):
 
     return True
 
-@limiter.limit("10 per minute")
 @app.route('/api/noise', methods=['POST'])
+@limiter.limit("10 per minute")
 def generate_noise():
     data = request.get_json()
     sampling_rate = data['samplingRate']
@@ -83,8 +83,8 @@ def generate_noise():
         'noiseType': noise_type.value
     })
 
-@limiter.limit("10 per minute")
 @app.route('/api/perlin', methods=['POST'])
+@limiter.limit("10 per minute")
 def generate_perlin():
     data = request.get_json()
     width = data['width']
@@ -130,8 +130,9 @@ def generate_perlin():
         'filterProperties' : filterProperties
     })
 
-@limiter.limit("20 per minute")
+
 @app.route('/api/health', methods=['GET'])
+@limiter.limit("20 per minute")
 def server_health():
     return jsonify({'status': 'ok'})
 
