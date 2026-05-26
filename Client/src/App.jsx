@@ -8,7 +8,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 function App() {
   const headerRef = useRef(null);
 
-  const DEFAULT_PAGE = "/auditory";
+  const DEFAULT_PAGE = "/NoiseGenerator/auditory";
 
   useEffect(() => {
     console.log(headerRef.current);
@@ -36,8 +36,8 @@ function App() {
             <Route path="/" element={<Navigate to={DEFAULT_PAGE} replace/>}/>
 
             {/* Pages */}
-            <Route path="/auditory" element={<AuditoryPage/>}/>
-            <Route path="/perlin" element={<PerlinPage/>}/>
+            <Route path="/NoiseGenerator/auditory" element={<AuditoryPage/>}/>
+            <Route path="/NoiseGenerator/perlin" element={<PerlinPage/>}/>
 
           </Routes>
         </main>
