@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from NoiseGeneration import NoiseColors as nsc
 from NoiseGeneration import Noise as ns
 from Enums import NoiseType
@@ -11,6 +13,12 @@ import numpy as np
 
 app = Flask(__name__)
 CORS(app)
+
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["100 per day", "10 per minute"]
+)
 
 with open("../Shared/Constraints/AuditoryNoiseConstraints.json") as f:
     configAuditory = json.load(f)
@@ -42,6 +50,7 @@ def validate(key, value):
 
     return True
 
+@limiter.limit("10 per minute")
 @app.route('/api/noise', methods=['POST'])
 def generate_noise():
     data = request.get_json()
@@ -74,6 +83,7 @@ def generate_noise():
         'noiseType': noise_type.value
     })
 
+@limiter.limit("10 per minute")
 @app.route('/api/perlin', methods=['POST'])
 def generate_perlin():
     data = request.get_json()
@@ -120,6 +130,7 @@ def generate_perlin():
         'filterProperties' : filterProperties
     })
 
+@limiter.limit("20 per minute")
 @app.route('/api/health', methods=['GET'])
 def server_health():
     return jsonify({'status': 'ok'})
