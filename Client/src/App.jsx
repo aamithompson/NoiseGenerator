@@ -34,6 +34,7 @@ function App() {
             <Routes>
             {/* Default Path - Redirects "/" path to DEFAULT_PAGE */}
             <Route path="/" element={<Navigate to={DEFAULT_PAGE} replace/>}/>
+            <Route path="/NoiseGenerator/" element={<Navigate to={DEFAULT_PAGE} replace/>}/>
 
             {/* Pages */}
             <Route path="/NoiseGenerator/auditory" element={<AuditoryPage/>}/>
