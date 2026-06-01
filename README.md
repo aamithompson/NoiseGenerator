@@ -200,9 +200,50 @@ While there is continuous deployment, there is currently no continuous integrati
 
 ## 6. Algorithms
 
-### Brownian Noise (Naive Implementation)
+### Brownian Noise (Brute Force/Spectral Implementation)
+**Brownian noise** is a signal noise produced by **Brownian motion**, i.e., a mathematical model of the motion of particles in a fluid of some kind. The random fluctuation of particles creates a random walk of a particle in that environment or a cumulative sum of shifts in its position. The spectral implementation of this does so by constructing an infinite sum of sine waves of different weights. Since we cannot actually have an infinite sum, we truncate at some large finite N. The Brownian motion `W(t)` (Wiener process) on the interval `[0, π]` can be represented as:
+```text
+W(t) = (a₀/√π)·t  +  Σₙ (aₙ/n) · √(2/π) · sin(n·t)
+```
+Where every `aₙ` is an independent draw from the normal distribution `Normal(0,1)`. Each term in the sum is one *mode* or a sine wave of frequency `n`, scaled down by `1/n` and weighted by a random coefficient (our `aₙ`).
 
-### White Noise (Fast Fourier Transformations)
+For Brownian noise, the *power* is proportional to amplitude² and thus at frequency `n` is proportional to `1/n²`, giving us the `1/f²` signature of brown noise.
+
+We then tie everything together with the computation of the full path of the Brownian motion by using the drift term `(a₀/√π) · t` and adding our computed sums which are a sum of all `N` sine modes evaluated at time `t[i]`:
+```text
+(a₀/√π) · t + sums
+```
+The example python code can be seen here:
+```python
+#PARAMETERS
+N = 10**6
+
+#CONSTANTS
+SQRT_PI = math.sqrt(math.pi)
+SQRT_2DIVPI = math.sqrt(2/math.pi)
+
+#COMPUTATION
+n = np.arange(1, N+1)
+
+#ALGORITHM
+def GenerateBrownNoise(length):
+    t = np.linspace(0, math.pi, length)
+    an = np.random.normal(0, 1, N+1)
+
+    sums = np.empty(length)
+    for i in range(length):
+        sequence = BrownSequence(an[1:], n, t[i])
+        sums[i] = np.sum(sequence)
+
+    return (an[0]/SQRT_PI) * t + sums
+
+def BrownSequence(a, n, t):
+    return (a/n) * SQRT_2DIVPI * math.sin(n * t)
+```
+
+This then evaluates to a time complexity `O(N ⋅ length)` which is enormous even with moderate sampling rates for a few seconds. For demonstration, at N = 10⁶ modes and a modest 44,100 samples (1 second of audio at CD quality), this requires roughly 44 billion floating point operations per second of output. This problem drove me to search for how signal noise *really* is handled on computers because this would be ridiculous to compute in a timely manner.
+
+### Brownian Noise (Fast Fourier Transformations)
 
 ### Noise Colors
 
