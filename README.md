@@ -48,7 +48,7 @@ The noise generation functions are built with modularity and choice between CPU 
 ## 3. Screenshots
 
 ### Auditory Noise
-*The auditory noise page. The left side displays the playback canvas with controls, waveform graph, and spectrogram. The right side contains the noise parameters. On the right are the controls for the noise.*
+*The auditory noise page. The left side displays the playback canvas with controls, waveform graph, and spectrogram. On the right side are the controls for the noise.*
 
 ![Auditory Noise](Screenshots/AuditoryNoise.jpg)
 
@@ -201,7 +201,7 @@ While there is continuous deployment, there is currently no continuous integrati
 ## 6. Algorithms
 
 ### Brownian Noise (Brute Force/Spectral Implementation)
-**Brownian noise** is a signal noise produced by **Brownian motion**, i.e., a mathematical model of the motion of particles in a fluid of some kind. The random fluctuation of particles creates a random walk of a particle in that environment or a cumulative sum of shifts in its position. The spectral implementation of this does so by constructing an infinite sum of sine waves of different weights. Since we cannot actually have an infinite sum, we truncate at some large finite N. The Brownian motion `W(t)` (Wiener process) on the interval `[0, π]` can be represented as:
+**Brownian noise** is a signal noise produced by **Brownian motion**, e.g., a mathematical model of the motion of particles in a fluid of some kind. The random fluctuation of particles creates a random walk of a particle in that environment or a cumulative sum of shifts in its position. The spectral implementation of this does so by constructing an infinite sum of sine waves of different weights. Since we cannot actually have an infinite sum, we truncate at some large finite N. The Brownian motion `W(t)` (Wiener process) on the interval `[0, π]` can be represented as:
 ```text
 W(t) = (a₀/√π)·t  +  Σₙ (aₙ/n) · √(2/π) · sin(n·t)
 ```
