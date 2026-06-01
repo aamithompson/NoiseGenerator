@@ -243,7 +243,76 @@ def BrownSequence(a, n, t):
 
 This then evaluates to a time complexity `O(N ⋅ length)` which is enormous even with moderate sampling rates for a few seconds. For demonstration, at N = 10⁶ modes and a modest 44,100 samples (1 second of audio at CD quality), this requires roughly 44 billion floating point operations per second of output. This problem drove me to search for how signal noise *really* is handled on computers because this would be ridiculous to compute in a timely manner.
 
-### Brownian Noise (Fast Fourier Transformations)
+### Brownian Noise (Fast Fourier Transform)
+To improve on the computation time, rather than work in the *time domain* with the spectral approach, we can work backwards in the *frequency domain*. A **Fourier transform** converts a signal from its original domain which is usually time or space into a frequency domain. A **fast Fourier transform** is an algorithm which computes the discrete Fourier transform of a sequence. Now, if we know what the frequency spectrum *should* look like, and that is less information we need to work with, then it might be computationally better to work from this point and utilize an inverse FFT to convert it into the time domain instead. We compute our samples count as the duration we need multiplied by the sampling rate, i.e.:
+```text
+samples = duration * sampling rate
+```
+We then use this to compute the *frequency bins*, which is a collection of discrete buckets representing a continuous range of frequencies. Also since the signal is real-valued we only need positive frequencies thus we only need half of the frequencies. The following is code for this computation:
+```python
+f = np.fft.rfftfreq(samples, 1/sRate)
+```
+
+We then assign each frequency bin an amplitude according to a power law `f^(-β)`. The exponent `-β` is derived from an `fPower` (which is the noise color, in our case `fPower = 2` for brown noise) and the attenuation `att` (which is decibels (dB) per octave).
+```python
+spectrum[1:] = f[1:]**(-(0.5 * fPower * (att/10.0) / np.log10(2.0)))
+```
+
+We can then take out the frequencies that are outside of hearing range which is generally `[20Hz-20kHz]`. This is bandlimiting:
+```python
+spectrum[np.logical_or(f < minF, f > maxF)] = 0
+```
+
+However, this is still a deterministic signal and thus we need to introduce the *noise* of it. We can apply a random phase to each frequency bin uniformly drawn from `[0, 2π]` in order to scramble the time domain structure. This eliminates having a clean, repeating waveform:
+```python
+phases = np.random.uniform(0, 2 * np.pi, len(f) - 1)
+spectrum[1:] *= np.exp(1j * phases)
+```
+
+Now that our frequency bins are set up, we can apply an inverse fast Fourier transform to convert it to time domain. We also pad it to handle off by one samples `irfft` can produce:
+```python
+noise = np.fft.irfft(spectrum)
+noise = np.pad(noise, (0, samples - len(noise)))
+```
+
+Then finally we normalize it to rescale the output to `[0, 1]`. The complete code is as follows:
+```python
+# Default arguments for audio
+DEFAULT_DURATION = 1.0
+DEFAULT_FPOWER = 1
+DEFAULT_MINF = 20
+DEFAULT_MAXF = 20000
+DEFAULT_SRATE = SRATE_CD
+DEFAULT_ATT = np.log10(2.0)*10
+DEFAULT_COMP = 'CPU'
+
+
+def GenerateNoiseCPU(duration=DEFAULT_DURATION, fPower=DEFAULT_FPOWER, minF=DEFAULT_MINF, maxF=DEFAULT_MAXF, sRate=DEFAULT_SRATE, att=DEFAULT_ATT):
+    samples = int(duration * sRate)
+    f = np.fft.rfftfreq(samples, 1/sRate)
+
+    spectrum = np.zeros_like(f, dtype='complex')
+    spectrum[1:] = f[1:]**(-(0.5 * fPower * (att/10.0) / np.log10(2.0)))
+    spectrum[np.logical_or(f < minF, f > maxF)] = 0
+
+    phases = np.random.uniform(0, 2 * np.pi, len(f) - 1)
+    spectrum[1:] *= np.exp(1j * phases)
+
+    noise = np.fft.irfft(spectrum)
+    noise = np.pad(noise, (0, samples - len(noise)))
+    noise = (noise - np.min(noise)) / (np.max(noise) - np.min(noise))
+
+    return noise
+```
+
+And we get specifically brown noise using a wrapper and constant:
+```python
+FPOWER_BROWN = 2.0
+def GenerateNoiseBrown(duration=ns.DEFAULT_DURATION, minF=ns.DEFAULT_MINF, maxF=ns.DEFAULT_MAXF, sRate=ns.DEFAULT_SRATE, att=ns.DEFAULT_ATT, comp=ns.DEFAULT_COMP):
+    return ns.GenerateNoise(duration, FPOWER_BROWN, minF, maxF, sRate, att, comp)
+```
+
+This version has a time complexity of `O(length · log(length))`, a considerable improvement over `O(N ⋅ length)`. At the same 44,100 samples, this requires roughly 700,000 operations — compared to 44 billion for the spectral approach.
 
 ### Noise Colors
 
