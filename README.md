@@ -104,6 +104,22 @@ The noise generation functions are built with modularity and choice between CPU 
   ```
 
 ## 5. Architecture
+```text
+NoiseGenerator/
+├── client/
+│   ├── src/
+│       ├── components/
+│       ├── context/
+│       ├── data/
+│       ├── pages/
+│       └── styles/
+├── server/
+│   ├── NoiseGeneration/
+│   ├── app.py
+│   └── Enums.py
+└── shared/
+    └── constraints/
+```
 
 ### Web Interface (Client)
 The interface is written with JavaScript, HTML, CSS, and React with the builds done with Vite. There are three general components for all pages:
