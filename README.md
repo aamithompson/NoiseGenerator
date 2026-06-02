@@ -315,8 +315,46 @@ def GenerateNoiseBrown(duration=ns.DEFAULT_DURATION, minF=ns.DEFAULT_MINF, maxF=
 This version has a time complexity of `O(length · log(length))`, a considerable improvement over `O(N ⋅ length)`. At the same 44,100 samples, this requires roughly 700,000 operations — compared to 44 billion for the spectral approach.
 
 ### Noise Colors
+The various noise colors are defined by different *power spectral densities* (PSDs). PSDs describe the *power* (energy per unit frequency) distribution at various frequencies. A spectral density is a stastical average of frequency content. The following are the spectral densities of each color of noise where `PSD(f) ∝ f^(-β)`:
+- White Noise: β = 0
+- Pink Noise: β = 1
+- Brown Noise: β = 2
+- Blue Noise: β = -1
 
-### Auditory Noise
+White noise has a flat spectral density and thus equal power among all frequencies. In contrast pink noise has a higher intensity at lower frequencies and brown noise even more so. On the other end, "Blue noise has β = -1, giving `PSD(f) ∝ f^(+1)`, so power increases with frequency, the opposite of brown noise.
+
+As seen with brown noise in the FFT section, we simply change the fpower in our generate function:
+```python
+def GenerateNoiseCPU(duration, >>> fPower <<<, minF, maxF, sRate, att)
+```
+
+And to reduce redundant code we write wrappers for each noise color to make it intuitive for development:
+```python
+# CONSTANT(S)
+#-------------------------------------------------------------------------------
+FPOWER_WHITE = 0.0
+FPOWER_PINK = 1.0
+FPOWER_BROWN = 2.0
+FPOWER_BLUE = -1.0
+FPOWER_PURPLE = -2.0
+
+# FUNCTION(S)
+#-------------------------------------------------------------------------------
+def GenerateNoiseWhite(duration=ns.DEFAULT_DURATION, minF=ns.DEFAULT_MINF, maxF=ns.DEFAULT_MAXF, sRate=ns.DEFAULT_SRATE, att=ns.DEFAULT_ATT, comp=ns.DEFAULT_COMP):
+    return ns.GenerateNoise(duration, FPOWER_WHITE, minF, maxF, sRate, att, comp)
+
+def GenerateNoisePink(duration=ns.DEFAULT_DURATION, minF=ns.DEFAULT_MINF, maxF=ns.DEFAULT_MAXF, sRate=ns.DEFAULT_SRATE, att=ns.DEFAULT_ATT, comp=ns.DEFAULT_COMP):
+    return ns.GenerateNoise(duration, FPOWER_PINK, minF, maxF, sRate, att, comp)
+
+def GenerateNoiseBrown(duration=ns.DEFAULT_DURATION, minF=ns.DEFAULT_MINF, maxF=ns.DEFAULT_MAXF, sRate=ns.DEFAULT_SRATE, att=ns.DEFAULT_ATT, comp=ns.DEFAULT_COMP):
+    return ns.GenerateNoise(duration, FPOWER_BROWN, minF, maxF, sRate, att, comp)
+
+def GenerateNoiseBlue(duration=ns.DEFAULT_DURATION, minF=ns.DEFAULT_MINF, maxF=ns.DEFAULT_MAXF, sRate=ns.DEFAULT_SRATE, att=ns.DEFAULT_ATT, comp=ns.DEFAULT_COMP):
+    return ns.GenerateNoise(duration, FPOWER_BLUE, minF, maxF, sRate, att, comp)
+
+def GenerateNoisePurple(duration=ns.DEFAULT_DURATION, minF=ns.DEFAULT_MINF, maxF=ns.DEFAULT_MAXF, sRate=ns.DEFAULT_SRATE, att=ns.DEFAULT_ATT, comp=ns.DEFAULT_COMP):
+    return ns.GenerateNoise(duration, FPOWER_PURPLE, minF, maxF, sRate, att, comp)
+```
 
 ### Perlin Noise
 
