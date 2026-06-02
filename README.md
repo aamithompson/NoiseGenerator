@@ -315,20 +315,22 @@ def GenerateNoiseBrown(duration=ns.DEFAULT_DURATION, minF=ns.DEFAULT_MINF, maxF=
 This version has a time complexity of `O(length · log(length))`, a considerable improvement over `O(N ⋅ length)`. At the same 44,100 samples, this requires roughly 700,000 operations — compared to 44 billion for the spectral approach.
 
 ### Noise Colors
-The various noise colors are defined by different *power spectral densities* (PSDs). PSDs describe the *power* (energy per unit frequency) distribution at various frequencies. A spectral density is a stastical average of frequency content. The following are the spectral densities of each color of noise where `PSD(f) ∝ f^(-β)`:
-- White Noise: β = 0
-- Pink Noise: β = 1
-- Brown Noise: β = 2
-- Blue Noise: β = -1
+The various noise colors are defined by different *power spectral densities* (PSDs). PSDs describe the *power* (energy per unit frequency) distribution at various frequencies. A spectral density is a statistical average of frequency content. The following are the spectral densities of each color of noise where `PSD(f) ∝ f^(-β)`:
+- White Noise: `β = 0`
+- Pink Noise: `β = 1`
+- Brown Noise: `β = 2`
+- Blue Noise: `β = -1`
+- Purple Noise: `β = -2`
 
-White noise has a flat spectral density and thus equal power among all frequencies. In contrast pink noise has a higher intensity at lower frequencies and brown noise even more so. On the other end, "Blue noise has β = -1, giving `PSD(f) ∝ f^(+1)`, so power increases with frequency, the opposite of brown noise.
+White noise has a flat spectral density and thus equal power across all frequencies. In contrast pink noise has a higher intensity at lower frequencies and brown noise even more so. On the other end, Blue noise has `β = -1`, giving `PSD(f) ∝ f^(+1)`, so power increases with frequency, the opposite of pink noise. Likewise, purple (violet) noise (β = -2) is the opposite of brown noise, with power increasing even more steeply with frequency.
 
 As seen with brown noise in the FFT section, we simply change the fpower in our generate function:
 ```python
 def GenerateNoiseCPU(duration, >>> fPower <<<, minF, maxF, sRate, att)
 ```
 
-And to reduce redundant code we write wrappers for each noise color to make it intuitive for development:
+Rather than implementing separate algorithms for each noise color, the implementation uses a single FFT-based generator and varies the spectral exponent β. This allows white, pink, brown, blue, and purple noise to be produced through the same pipeline while maintaining a consistent and intuitive interface:
+
 ```python
 # CONSTANT(S)
 #-------------------------------------------------------------------------------
