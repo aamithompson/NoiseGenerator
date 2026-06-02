@@ -53,7 +53,7 @@ The noise generation functions are built with modularity and choice between CPU 
 ![Auditory Noise](Screenshots/AuditoryNoise.jpg)
 
 ### Perlin Noise
-*The Perlin noise page. This page has the image generation on the right. On the left are the controls both for the noise and the image.*
+*The Perlin noise page. This page has the image generation on the left. On the right are the controls both for the noise and the image.*
 
 ![Perlin Noise](Screenshots/PerlinNoise.jpg)
 
