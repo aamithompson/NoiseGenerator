@@ -201,7 +201,7 @@ While there is continuous deployment, there is currently no continuous integrati
 ## 6. Algorithms
 
 ### Brownian Noise (Brute Force/Spectral Implementation)
-**Brownian noise** is a signal noise produced by **Brownian motion**, e.g., a mathematical model of the motion of particles in a fluid of some kind. The random fluctuation of particles creates a random walk of a particle in that environment or a cumulative sum of shifts in its position. The spectral implementation of this does so by constructing an infinite sum of sine waves of different weights. Since we cannot actually have an infinite sum, we truncate at some large finite N. The Brownian motion `W(t)` (Wiener process) on the interval `[0, π]` can be represented as:
+**Brownian noise** is a signal noise produced by **Brownian motion**, i.e., a mathematical model of the motion of particles in a fluid of some kind. The random fluctuation of particles creates a random walk of a particle in that environment or a cumulative sum of shifts in its position. The spectral implementation of this does so by constructing an infinite sum of sine waves of different weights. Since we cannot actually have an infinite sum, we truncate at some large finite N. The Brownian motion `W(t)` (Wiener process) on the interval `[0, π]` can be represented as:
 ```text
 W(t) = (a₀/√π)·t  +  Σₙ (aₙ/n) · √(2/π) · sin(n·t)
 ```
@@ -446,7 +446,7 @@ for i in range(octaves):
 
   maxValue += amp
 
-  amp *= persistance
+  amp *= persistence
   freq *= lacunarity
 ```
 Layering octaves this way produces fractal Brownian motion (fBm), the characteristic natural-looking detail at multiple scales seen in terrain, clouds, and organic textures.
