@@ -359,6 +359,104 @@ def GenerateNoisePurple(duration=ns.DEFAULT_DURATION, minF=ns.DEFAULT_MINF, maxF
 ```
 
 ### Perlin Noise
+A type of gradient noise developed by the computer scientist Ken Perlin, designed to produce more natural-looking procedural textures. While this application only produces two-dimensional Perlin noise, Perlin noise can be generated in any number of dimensions. The algorithm can be broken down into these major parts:
+- Permutation Table
+- Gradient Computation
+- Interpolation
+
+The permutation table serves as a hash for the direction of the gradient vectors. In this implementation, we have 8 vector directions and the permutation table is scaled up to a size of 2^12 = 4,096. The original permutation table for the algorithm was just 256 values. The table is then 'stacked' to double its size to prevent index overflow.
+
+The way to construct it is create an array ranging from 0 to n, then shuffle it. The `p` value you extract is:
+```python
+p = pTable[((pTable[ix%pSize] + iy)%pSize)].
+```
+
+You then restrict it to the number of vector directions you have with `gradient = v[p%8]`. This makes it dependent on both `x` and `y`. We then return its dot product with the distance vector `(x, y)` from the corner to the sample point. This is implemented as such:
+```python
+# Permutation Table
+pSize = 2**12
+pTableCPU = np.arange(pSize)
+np.random.shuffle(pTableCPU)
+pTableCPU = np.stack([pTableCPU, pTableCPU]).flatten()
+
+def GradientCPU(ix, iy, x, y):
+    ix = ix.astype(int)
+    iy = iy.astype(int)
+    v = np.array([[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]])
+    p = pTableCPU[((pTableCPU[ix%pSize] + iy)%pSize)]
+    gradient = v[p%8]
+
+    return gradient[:, :, 0] * x + gradient[:, :, 1] * y
+```
+
+For this noise, we operate on a grid and for each `(x, y)` we need four surrounding cell corners. We also have a local fractional offset `(sx, sy)`:
+```python
+#Coordinates
+ix0 = x.astype(int)
+ix1 = ix0 + 1
+iy0 = y.astype(int)
+iy1 = iy0 + 1
+
+#Interpolation Weights
+sx = x - ix0
+sy = y - iy0
+```
+
+The distance vectors in each corner are relative to that corner. We select them as such:
+```python
+n00 = Gradient(ix0, iy0, sx, sy, comp)
+n10 = Gradient(ix1, iy0, sx-1, sy, comp)
+n01 = Gradient(ix0, iy1, sx, sy-1, comp)
+n11 = Gradient(ix1, iy1, sx-1, sy-1, comp)
+```
+
+The gradient values are then interpolated to smooth it out:
+```python
+x0 = Interpolate(n00, n10, sx, "fade")
+x1 = Interpolate(n01, n11, sx, "fade")
+return Interpolate(x0, x1, sy, "fade")
+```
+
+The original interpolation function was simpler polynomial function:
+```python
+def InterpolatePolynomial(a, b, t):
+    #t = 3 * t**2 - 2 * t**3
+    t = (3 - 2 * t) * t ** 2
+    return InterpolateLinear(a, b, t)
+```
+
+But later was changed to the fade interpolation function in 2002 to remove artifacts and visual messes:
+```python
+def InterpolateFade(a, b, t):
+    #t = 6 * t**5 - 15 * t**4 + 10 * t**3
+    t = ((6 * t - 15) * t + 10) * (t**3)
+    return InterpolateLinear(a, b, t)
+```
+
+The difference between these is the first is a cubic polynomial while the latter is a quintic polynomial. The cubic has zero first derivatives at the edges (C¹ continuity) but non-zero second derivatives, which caused visible discontinuities in curvature. The quintic has zero first and second derivatives at both edges (C² continuity), eliminating these artifacts.
+
+Moving on, this is done at each cell. We then have a frequency `f = 1` and an amplitude `amp = 1`. Each octave is another Perlin noise that is added with the amplitude and frequency multiplying against a persistence and lacunarity respectively. The frequency is applied to our `x` and `y` values while the amplitude is applied to the whole result:
+```python
+data = np.zeros((height, width))
+freq = 1
+amp = 1
+maxValue = 0
+for i in range(octaves):
+  data += Perlin(x * freq, y * freq, "CPU") * amp
+
+  maxValue += amp
+
+  amp *= persistance
+  freq *= lacunarity
+```
+Layering octaves this way produces fractal Brownian motion (fBm), the characteristic natural-looking detail at multiple scales seen in terrain, clouds, and organic textures.
+
+The data is then normalized at `[0, 1]`:
+```python
+data /= maxValue
+data = (data - np.min(data)) / (np.max(data) - np.min(data))
+```
+The first rescales by the theoretical maximum amplitude so octave count doesn't affect scale. The second stretches the actual output to fill `[0, 1]`. 
 
 ## 7. Security
 
