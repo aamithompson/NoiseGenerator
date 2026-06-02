@@ -322,7 +322,7 @@ The various noise colors are defined by different *power spectral densities* (PS
 - Blue Noise: `β = -1`
 - Purple Noise: `β = -2`
 
-White noise has a flat spectral density and thus equal power across all frequencies. In contrast pink noise has a higher intensity at lower frequencies and brown noise even more so. On the other end, Blue noise has `β = -1`, giving `PSD(f) ∝ f^(+1)`, so power increases with frequency, the opposite of pink noise. Likewise, purple (violet) noise (β = -2) is the opposite of brown noise, with power increasing even more steeply with frequency.
+White noise has a flat spectral density and thus equal power across all frequencies. In contrast pink noise has a higher intensity at lower frequencies and brown noise even more so. On the other end, Blue noise has `β = -1`, giving `PSD(f) ∝ f^(+1)`, so power increases with frequency, the opposite of pink noise. Likewise, purple (violet) noise `(β = -2)` is the opposite of brown noise, with power increasing even more steeply with frequency.
 
 As seen with brown noise in the FFT section, we simply change the fpower in our generate function:
 ```python
