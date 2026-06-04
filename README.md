@@ -1,4 +1,3 @@
-> ⚠️ README in progress
 # Noise Generator (Python, Flask, JavaScript, React) | [Live Demo](https://aamithompson.github.io/NoiseGenerator/)
 ## 1. Overview
 A web application built with **JavaScript**, **React**, **Python**, and **Flask** which allows users to create visual and auditory noise based on parameters chosen by the user. The current available noises are Brownian, white, pink and blue for auditory, and Perlin noise for visual.
@@ -461,20 +460,29 @@ The first rescales by the theoretical maximum amplitude so octave count doesn't 
 ## 7. Security
 
 ### Verifying Parameters Server Side
+Because client-side data can be modified by users, users can deviate from the boundaries the UI allows for. This requires verification with incoming requests to the server. The constraints which are defined in various JSONs on the shared directory allows us consistency with the intended UI boundaries on the client and what we know we can handle on the server.
+
+Once the flask function receives the information we ensure the variables are their intended data type as well as within the defined boundaries expressed in the respective constraints file.
 
 ### Limiter
+A flask limiter was implemented to allow for a particular number of requests per amount of time for each user.
 
 ## 8. Future Work / Optimization Considerations 
 
 ### Voronoi/Worley Noise
+Voronoi noise is a visual noise which has a cell-like appearance. The generation function for this type of noise already exists. I want to build the client page for this noise to allow users access to it. The main parameter for this will most likely be the cell size.
 
 ### Simplex Noise
+An alternative to Perlin noise which is more efficient due to change in geometry. For the grid, it uses simplexes to produce a "honeycomb". This simplicial honeycomb uses the vertices for points to use for the calculations. In our case we operate in a 2D space for our images so the simplex would be a triangle, reducing the number of points for our cells from 4 to 3. This has a higher impact in higher dimensional spaces as simplexes have n+1 vertices in an n-dimension. For example, a regular 4D lattice requires 16 gradient contributions. A lattice constructed of simplexes would only be 5 contributions in this 4D space.
 
 ### Value Noise
+Value noise assigns random scalar values to the grid points then interpolates between them. Compared to Perlin noise this is much more computationally simple but can introduce blocky looking noise. This can be obscured somewhat by layering octaves.
 
 ### Benchmarking
+I would like to do some benchmarking between CPU and GPU implementations at different sample sizes to see where the performances intersect, and how they scale.
 
 ### Error Handling
+Error handling needs to be added both on the client side as well as on the server side. As of now, there are only passed http errors onto the client and any errors on server side are ignored or terminate the program.
 
 ## 9. License
 This project is licensed under the GPL-3.0 License - see the `LICENSE` file for details.
