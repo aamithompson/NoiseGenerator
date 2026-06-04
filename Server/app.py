@@ -26,7 +26,10 @@ with open("../Shared/Constraints/AuditoryNoiseConstraints.json") as f:
 with open("../Shared/Constraints/PerlinNoiseConstraints.json") as f:
     configPerlin = json.load(f)
 
-settings = configAuditory["settings"] | configPerlin["settings"]
+with open("../Shared/Constraints/VoronoiNoiseConstraints.json") as f:
+    configVoronoi = json.load(f)
+
+settings = configAuditory["settings"] | configPerlin["settings"] | configVoronoi["settings"]
 
 def validate(key, value):
     s = settings.get(key)
@@ -128,6 +131,27 @@ def generate_perlin():
         'persistence' : persistence,
         'filter' : filter.value,
         'filterProperties' : filterProperties
+    })
+
+@app.route('/api/voronoi', methods=['POST'])
+@limiter.limit("10 per minute")
+def generate_voronoi():
+    data = request.get_json()
+    width = data['width']
+    height = data['height']
+    cellSize = data['cellSize']
+
+    validate("width", width)
+    validate("height", height)
+    validate("cellSize", cellSize)
+
+    perlin = ns.GenerateVNoiseWorley(width, height, cellSize)
+    
+    return jsonify({
+        'data': perlin.tolist(),
+        'width' : width,
+        'height' : height,
+        'cellSize' : cellSize
     })
 
 

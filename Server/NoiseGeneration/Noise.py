@@ -12,6 +12,7 @@
 # Visual Concepts
 # https://en.wikipedia.org/wiki/Perlin_noise
 # https://en.wikipedia.org/wiki/Simplex_noise
+# https://en.wikipedia.org/wiki/Worley_noise
 #===============================================================================
 import numpy as np
 #import cupy as cp
@@ -145,7 +146,6 @@ def GenerateVNoisePerlinCPU(width, height, octaves=1, lacunarity=2.0, persistanc
 
     data /= maxValue
     data = (data - np.min(data)) / (np.max(data) - np.min(data))
-    print(data.shape)
     return data
 
 """def GenerateVNoisePerlinCUDA(width, height, octaves=1, lacunarity=2.0, persistance=0.5, gridsize=DEFAULT_GRIDSIZE):
