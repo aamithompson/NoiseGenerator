@@ -2,10 +2,12 @@
 // Filename: VoronoiCanvasDisplay.jsx
 // Author: Aaron Thompson
 // Date Created: 6/4/2026
-// Last Updated: 6/4/2026
+// Last Updated: 6/5/2026
 //
 // Description: Canvas display for voronoi noise after generation.
 //==============================================================================
+import "./VoronoiCanvasDisplay.css"
+
 import { useImage } from '../../context/VoronoiImageContext';
 import { useRef, useEffect } from 'react'
 //------------------------------------------------------------------------------

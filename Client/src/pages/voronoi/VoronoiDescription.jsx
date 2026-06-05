@@ -16,8 +16,11 @@ export default function VoronoiDescription() {
             </h2>
             <p className="descriptionText">
                 {
-                    "Voronoi noise is a visual noise which has a cell-like"
-                    +"  appearance."
+                    "Voronoi noise, also known as Worley noise, is a visual noise"
+                    + " which has a cell-like appearance. The noise is a collection"
+                    + " of random points, known as seed points, which are used to produce a Voronoi diagram."
+                    + " This diagram is comprised of cells where every point existing"
+                    + " in a cell is closer to the cell's seed point than any other."
                 }
             </p>
         </section>

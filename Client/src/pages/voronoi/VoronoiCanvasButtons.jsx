@@ -2,11 +2,13 @@
 // Filename: VoronoiCanvasButtons.jsx
 // Author: Aaron Thompson
 // Date Created: 6/4/2026
-// Last Updated: 6/4/2026
+// Last Updated: 6/5/2026
 //
 // Description: Buttons to utilize the voronoi canvas, e.g. generation, download,
 // etc.
 //==============================================================================
+import "./VoronoiCanvasButtons.css"
+
 import { useSettings } from "../../context/VoronoiSettingsContext";
 import { useImage } from "../../context/VoronoiImageContext";
 import { useServerStatus } from "../../context/ServerStatusContext";
