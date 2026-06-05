@@ -2,13 +2,13 @@
 // Filename: PerlinPage.jsx
 // Author: Aaron Thompson
 // Date Created: 5/20/2026
-// Last Updated: 5/25/2026
+// Last Updated: 6/4/2026
 //
 // Description: Perlin page html.
 //==============================================================================
 import './PerlinPage.css'
 import ControlsSidebar from '../../components/ControlsSidebar';
-import PerlinNoiseSetings from './PerlinNoiseSettings';
+import PerlinNoiseSettings from './PerlinNoiseSettings';
 import PerlinImageSettings from './PerlinImageSettings';
 import PerlinDescription from './PerlinDescription';
 import CanvasArea from '../../components/CanvasArea';
@@ -29,7 +29,7 @@ export default function PerlinPage() {
               <PerlinCanvasButtons/>
             </CanvasArea>
             <ControlsSidebar>
-              <PerlinNoiseSetings/>
+              <PerlinNoiseSettings/>
               <hr/>
               <PerlinImageSettings/>
               <hr/>

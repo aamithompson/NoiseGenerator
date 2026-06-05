@@ -2,7 +2,7 @@
 # Filename: Noise.py
 # Author(s): Aaron Thompson
 # Date Created: 1/12/2022
-# Date Last Updated: 5/25/2026
+# Date Last Updated: 6/5/2026
 # Description: If audio, generates noise into a 1-dimensional signal given a
 # duration(seconds). For visual, generates noise into a n x m matrix.
 # Audio Concepts
@@ -12,6 +12,7 @@
 # Visual Concepts
 # https://en.wikipedia.org/wiki/Perlin_noise
 # https://en.wikipedia.org/wiki/Simplex_noise
+# https://en.wikipedia.org/wiki/Worley_noise
 #===============================================================================
 import numpy as np
 #import cupy as cp
@@ -145,7 +146,6 @@ def GenerateVNoisePerlinCPU(width, height, octaves=1, lacunarity=2.0, persistanc
 
     data /= maxValue
     data = (data - np.min(data)) / (np.max(data) - np.min(data))
-    print(data.shape)
     return data
 
 """def GenerateVNoisePerlinCUDA(width, height, octaves=1, lacunarity=2.0, persistance=0.5, gridsize=DEFAULT_GRIDSIZE):
@@ -220,8 +220,8 @@ def GradientCPU(ix, iy, x, y):
 
 #Worley Noise
 def GenerateVNoiseWorley(width, height, cellsize):
-    x = np.linspace(0, width/cellsize, width)
-    y = np.linspace(0, height/cellsize, height)
+    x = np.linspace(0, (width - 1)/cellsize, width)
+    y = np.linspace(0, (height - 1)/cellsize, height)
     x, y = np.meshgrid(x, y)
 
     data = Worley(x, y, cellsize)
@@ -229,45 +229,32 @@ def GenerateVNoiseWorley(width, height, cellsize):
     return data
 
 def Worley(x, y, cellsize):
-    width = x.shape[0]
-    height = y.shape[1]
+    width = x.shape[1]
+    height = y.shape[0]
     baseCellX = np.floor(x)
     baseCellY = np.floor(y)
 
     #Random Cell Positions
-    randX = np.random.rand(int(width/cellsize) + 3, int(height/cellsize) + 3)
+    randX = np.random.rand(int(np.ceil(height/cellsize)) + 2, int(np.ceil(width/cellsize)) + 2)
     randX = np.repeat(randX, cellsize, axis=0)
     randX = np.repeat(randX, cellsize, axis=1)
-    randX = randX[:width + cellsize * 2, :height + cellsize * 2]
-    randY = np.random.rand(int(width/cellsize) + 3, int(height/cellsize) + 3)
+    randX = randX[:height + cellsize * 2, :width + cellsize * 2]
+    randY = np.random.rand(int(np.ceil(height/cellsize)) + 2, int(np.ceil(width/cellsize)) + 2)
     randY = np.repeat(randY, cellsize, axis=0)
     randY = np.repeat(randY, cellsize, axis=1)
-    randY = randY[:width + cellsize * 2, :height + cellsize * 2]
-
-    #x += 0
-    #y -= 0
-    #i = 1
-    #j = -1
-    #ix = (i+1) * cellsize
-    #iy = (j+1) * cellsize
-    #cellX = baseCellX + i
-    #cellY = baseCellY + j
-    #cellPosX = cellX + randX[ix:width+ix, iy:height+iy]
-    #cellPosY = cellY + randY[ix:width+ix, iy:height+iy]
-    #distance = np.sqrt((cellPosX - x) ** 2 + (cellPosY - y) ** 2)
-    #return distance
+    randY = randY[:height + cellsize * 2, :width + cellsize * 2]
 
     #Distance
-    minDistance = np.full((width, height), np.inf)
+    minDistance = np.full((height, width), np.inf)
     for i in range(-1, 2):
         for j in range(-1, 2):
-            ix = (j+1) * cellsize
-            iy = (i+1) * cellsize
+            ix = (i+1) * cellsize
+            jy = (j+1) * cellsize
 
             cellX = baseCellX + i
             cellY = baseCellY + j
-            cellPosX = cellX + randX[ix:width+ix, iy:height+iy]
-            cellPosY = cellY + randY[ix:width+ix, iy:height+iy]
+            cellPosX = cellX + randX[jy:height+jy, ix:width+ix]
+            cellPosY = cellY + randY[jy:height+jy, ix:width+ix]
             distance = np.sqrt((cellPosX - x) ** 2 + (cellPosY - y) ** 2)
             minDistance = np.minimum(minDistance, distance)
 

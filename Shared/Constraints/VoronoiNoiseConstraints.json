@@ -1,0 +1,24 @@
+{
+    "settings": {
+        "width": {
+            "type": "int",
+            "min": 1,
+            "max": 768,
+            "default": 256
+        },
+
+        "height": {
+            "type": "int",
+            "min": 1,
+            "max": 768,
+            "default": 256
+        },
+
+        "cellSize": {
+            "type": "int",
+            "min": 4,
+            "max": 128,
+            "default": 32
+        }
+    }
+}

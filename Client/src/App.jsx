@@ -2,6 +2,7 @@ import './App.css'
 import Header from './components/Header'
 import AuditoryPage from './pages/auditory/AuditoryPage';
 import PerlinPage from './pages/perlin/PerlinPage';
+import VoronoiPage from './pages/voronoi/VoronoiPage';
 import { ServerStatusProvider } from './context/ServerStatusContext';
 import { useEffect, useRef} from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
@@ -39,6 +40,7 @@ function App() {
             {/* Pages */}
             <Route path="/NoiseGenerator/auditory" element={<AuditoryPage/>}/>
             <Route path="/NoiseGenerator/perlin" element={<PerlinPage/>}/>
+            <Route path="/NoiseGenerator/voronoi" element={<VoronoiPage/>}/>
 
           </Routes>
         </main>
