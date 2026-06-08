@@ -2,7 +2,7 @@
 // Filename: AuditoryPlaybackDisplay.jsx
 // Author: Aaron Thompson
 // Date Created: 5/14/2026
-// Last Updated: 5/19/2026
+// Last Updated: 6/6/2026
 //
 // Description: Playback controls for the auditory page.
 //==============================================================================
@@ -43,6 +43,7 @@ export default function AuditoryPlaybackDisplay() {
 //------------------------------------------------------------------------------
     function getState() {
         const state = {
+            noiseClass: "auditory",
             noiseType: parseInt(selectedNoise),
             volume: parseInt(volume),
             samplingRate: parseInt(samplingRate),

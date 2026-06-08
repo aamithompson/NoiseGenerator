@@ -145,10 +145,10 @@ def generate_voronoi():
     validate("height", height)
     validate("cellSize", cellSize)
 
-    perlin = ns.GenerateVNoiseWorley(width, height, cellSize)
+    worley = ns.GenerateVNoiseWorley(width, height, cellSize)
     
     return jsonify({
-        'data': perlin.tolist(),
+        'data': worley.tolist(),
         'width' : width,
         'height' : height,
         'cellSize' : cellSize

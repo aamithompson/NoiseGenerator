@@ -2,7 +2,7 @@
 // Filename: PerlinCanvasButtons.jsx
 // Author: Aaron Thompson
 // Date Created: 5/20/2026
-// Last Updated: 5/22/2026
+// Last Updated: 6/6/2026
 //
 // Description: Buttons to utilize the perlin canvas, e.g. generation, download,
 // etc.
@@ -23,6 +23,7 @@ export default function PerlinCanvasButtons() {
 //------------------------------------------------------------------------------
     function getState() {
         const state = {
+            noiseClass: "perlin",
             octaves: parseInt(octaves),
             lacunarity: parseFloat(lacunarity),
             persistence: parseFloat(persistence),

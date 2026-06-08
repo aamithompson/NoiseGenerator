@@ -2,7 +2,7 @@
 // Filename: VoronoiCanvasButtons.jsx
 // Author: Aaron Thompson
 // Date Created: 6/4/2026
-// Last Updated: 6/5/2026
+// Last Updated: 6/6/2026
 //
 // Description: Buttons to utilize the voronoi canvas, e.g. generation, download,
 // etc.
@@ -24,6 +24,7 @@ export default function VoronoiCanvasButtons() {
 //------------------------------------------------------------------------------
     function getState() {
         const state = {
+            noiseClass: "worley",
             cellSize: parseInt(cellSize),
             width: parseInt(width),
             height: parseInt(height)
