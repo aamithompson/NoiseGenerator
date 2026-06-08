@@ -1,3 +1,10 @@
+# .github/workflows/aws_deploy.yml
+name: Deploy to Lambda
+
+on:
+  push:
+    branches: [features/aws]
+    
 jobs:
   deploy-layer:
     runs-on: ubuntu-latest
