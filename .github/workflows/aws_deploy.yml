@@ -60,7 +60,6 @@ jobs:
         with:
           python-version: '3.14'
       - name: Install dependencies
-        run: pip install numpy -t Server/
         run: pip install numpy pillow -t Server/
       - name: Zip deployment package
         run: |
