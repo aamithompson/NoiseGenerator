@@ -8,7 +8,7 @@ on:
 jobs:
   deploy-layer:
     runs-on: ubuntu-latest
-    if: contains(join(github.event.commits.*.modified, ','), 'Shared/Constraints')
+    #if: contains(join(github.event.commits.*.modified, ','), 'Shared/Constraints')
     steps:
       - uses: actions/checkout@v4
 
@@ -56,7 +56,7 @@ jobs:
 
   deploy-function:
     runs-on: ubuntu-latest
-    if: contains(join(github.event.commits.*.modified, ','), 'Server/')
+    #if: contains(join(github.event.commits.*.modified, ','), 'Server/')
     steps:
       - uses: actions/checkout@v4
 
