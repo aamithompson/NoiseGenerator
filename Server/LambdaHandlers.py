@@ -53,6 +53,7 @@ def HandlePerlin(data):
     filter = FilterType(filter_raw)
     filterProperties = data['filterProperties']
 
+    print("Beginning Generation")
     perlin = np.array(0)
     match filter:
         case FilterType.NoFilter:
@@ -67,6 +68,7 @@ def HandlePerlin(data):
             perlin = ns.GenerateWood(width, height, 1/4, octaves, lacunarity, persistence)
         case FilterType.Marble:
             perlin = ns.GenerateMarble(width, height, octaves, lacunarity, persistence, 8, 8, 5)
+    print("Ending Generation")
     
     return {
         'data': perlin.tolist(),
