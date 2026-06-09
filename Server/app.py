@@ -53,7 +53,7 @@ def validate(key, value):
 
     return True
 
-@app.route('/api/noise', methods=['POST'])
+@app.route('/api/auditory', methods=['POST'])
 @limiter.limit("10 per minute")
 def generate_noise():
     data = request.get_json()

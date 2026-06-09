@@ -20,10 +20,8 @@ def lambda_handler(event, context):
         case "auditory":
             result = lh.HandleAuditory(body)
         case "perlin":
-            print("Entering HandlePerlin")
             result = lh.HandlePerlin(body)
-            print("Leaving HandlePerlin")
-        case "worley":
+        case "voronoi":
             result = lh.HandleWorley(body)
         case _:
             return {"statusCode": 400, "body": json.dumps({"error": "unknown noise type"})}
