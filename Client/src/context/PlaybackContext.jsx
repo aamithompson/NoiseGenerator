@@ -47,7 +47,7 @@ export function PlaybackProvider({ children }) {
 
     async function generateNoise(state) {
         try {
-            const response = await fetch(serverURL + '/api/noise', {
+            const response = await fetch(serverURL + '/api/auditory', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json'},
                 body: JSON.stringify(state)
@@ -55,14 +55,14 @@ export function PlaybackProvider({ children }) {
 
             
             const data = await response.json();
-            setAudioData(data);
+            setAudioData(data.data);
 
             if (audioContextRef.current.state === 'suspended') {
                 audioContextRef.current.resume();
             }
 
             pauseTimeRef.current = 0;
-            await playAudio(data.samples, data.samplingRate);
+            await playAudio(data.data.samples, data.data.samplingRate);
         } catch(error) {
             console.error('[ERROR] Could not generate audio noise: ', error);
         }

@@ -27,8 +27,13 @@ export function PerlinImageProvider({ children }) {
             body: JSON.stringify(state)
         });
 
-        const data = await response.json();
-        setImageData(data.data);
+        //Get S3 URL
+        const { url } = await response.json();
+
+        //Extract Data from S3
+        const s3Response = await fetch(url);
+        const { data } = await s3Response.json();
+        setImageData(data);
     }
 
     async function downloadImage() {

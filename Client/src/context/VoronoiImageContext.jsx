@@ -28,7 +28,7 @@ export function VoronoiImageProvider({ children }) {
         });
 
         const data = await response.json();
-        setImageData(data);
+        setImageData(data.data);
     }
 
     async function downloadImage() {

@@ -1,4 +1,5 @@
 import LambdaHandlers as lh
+import S3BucketDump as bd
 import json
 
 def lambda_handler(event, context):
@@ -18,11 +19,11 @@ def lambda_handler(event, context):
 
     match noiseClass:
         case "auditory":
-            result = lh.HandleAuditory(body)
+            result = bd.WrapData(lh.HandleAuditory(body))
         case "perlin":
-            result = lh.HandlePerlin(body)
+            result = bd.WrapData(lh.HandlePerlin(body))
         case "voronoi":
-            result = lh.HandleWorley(body)
+            result = bd.WrapData(lh.HandleWorley(body))
         case _:
             return {"statusCode": 400, "body": json.dumps({"error": "unknown noise type"})}
         
