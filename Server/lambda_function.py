@@ -19,16 +19,10 @@ def lambda_handler(event, context):
 
     match noiseClass:
         case "auditory":
-            result = bd.WrapData(lh.HandleAuditory(body))
+            return bd.WrapData(lh.HandleAuditory(body))
         case "perlin":
-            result = bd.WrapData(lh.HandlePerlin(body))
+            return bd.WrapData(lh.HandlePerlin(body))
         case "voronoi":
-            result = bd.WrapData(lh.HandleWorley(body))
+            return bd.WrapData(lh.HandleWorley(body))
         case _:
             return {"statusCode": 400, "body": json.dumps({"error": "unknown noise type"})}
-        
-    return {
-        "statusCode": 200,
-        "headers": {"Content-Type": "application/json"},
-        "body": json.dumps({"data": result})
-    }
